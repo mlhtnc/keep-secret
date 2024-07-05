@@ -2,9 +2,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import CrossPlatformStatusBar from './components/CrossPlatformStatusBar';
-import LoginScreen from './components/screens/LoginScreen';
-import HomeScreen from './components/screens/HomeScreen';
+import CrossPlatformStatusBar from './src/components/CrossPlatformStatusBar';
+import LoginScreen from './src/screens/LoginScreen';
+import HomeScreen from './src/screens/HomeScreen';
 
 
 const Stack = createNativeStackNavigator();
