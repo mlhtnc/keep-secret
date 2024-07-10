@@ -9,6 +9,7 @@ import { loadPassHash, loadSecret, saveSecret } from '../utils/save_utils';
 import { SettingsScreenName } from '../../src/constants';
 import AlertModal from '../components/AlertModal';
 import SyncActivitiyIndicator from '../components/SyncActivitiyIndicator';
+import useStoragePermission from '../hooks/useStoragePermission';
 
 export default function HomeScreen({ navigation, route }) {
 
@@ -19,6 +20,7 @@ export default function HomeScreen({ navigation, route }) {
   const [ addEditSecretModalVisible, setAddEditSecretModalVisible ] = useState(false);
   const [ syncing, setSyncing ] = useState(false);
 
+  useStoragePermission();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', handleFocus);
