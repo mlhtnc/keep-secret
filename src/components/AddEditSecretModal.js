@@ -11,6 +11,10 @@ export default function AddEditSecretModal({ visible, setVisible, onAdded }) {
 
 
   const onAddButtonClicked = () => {
+    if(!info || !password) {
+      return;
+    }
+
     onAdded?.({ info: info, password: password });
     onClose();
   }
