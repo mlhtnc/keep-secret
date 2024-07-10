@@ -26,7 +26,6 @@ const importSecrets = async (secretCipherDataStr) => {
     }
 
     saveSecret(secretCipherData);
-    console.log("done")
     return [ true ];
 
   } catch(err) {

@@ -27,7 +27,6 @@ export default function HomeScreen({ navigation, route }) {
 
   const handleFocus = async () => {
     initSecrets();
-    console.log('x')
   }
 
   const initSecrets = async () => {

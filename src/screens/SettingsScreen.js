@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import RNFS from 'react-native-fs';
 import DocumentPicker, { types } from 'react-native-document-picker';
@@ -8,11 +8,14 @@ import { loadSecret } from '../utils/save_utils';
 import { importSecrets } from '../utils/import_export_utils';
 import AlertModal from '../components/AlertModal';
 import { CannotExportNoSecretsAlertMessage, CannotExportSecretFileAlreadyExistAlertMessage, CannotImportAlreadyHaveSecretsAlertMessage, HomeScreenName } from '../constants';
+import SyncActivitiyIndicator from '../components/SyncActivitiyIndicator';
 
 
 export default function SettingsScreen({ navigation }) {
 
   const alertModalRef = useRef();
+
+  const [ syncing, setSyncing ] = useState(false);
 
   
   const onImportButtonClicked = async () => {
@@ -29,6 +32,8 @@ export default function SettingsScreen({ navigation }) {
 
       RNFS.readFile(uri, 'utf8')
       .then(async res => {
+        setSyncing(true);
+
         const result = await importSecrets(res);
         if(!result[0]) {
           alertModalRef.current.open(result[1]);
@@ -39,6 +44,8 @@ export default function SettingsScreen({ navigation }) {
 
       }).catch(err => {
         console.log(err);
+      }).finally(() => {
+        setSyncing(false);
       });
 
     })
@@ -57,7 +64,6 @@ export default function SettingsScreen({ navigation }) {
     }
 
     var path = RNFS.DownloadDirectoryPath + '/keep.secret';
-    console.log(path);
 
     RNFS.exists(path)
     .then((exists) => {
@@ -66,7 +72,6 @@ export default function SettingsScreen({ navigation }) {
       } else {
         RNFS.writeFile(path, JSON.stringify(cipherSecrets), 'utf8')
         .then((success) => {
-          console.log('FILE WRITTEN!');
           // TODO: Toast message
         })
         .catch((err) => {
@@ -99,6 +104,8 @@ export default function SettingsScreen({ navigation }) {
       </ScrollView>
       
       <AlertModal forwardedRef={alertModalRef}/>
+
+      <SyncActivitiyIndicator show={syncing} />
 
     </SafeAreaView>
   );
