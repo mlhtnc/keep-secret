@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
+
 import BasicButton from '../components/buttons/BasicButton';
-import { sha512 } from '../crypto_utils';
+import { sha512 } from '../utils/crypto_utils';
 import { loadPassHash, savePassHash } from '../utils/save_utils';
+import { HomeScreenName } from '../constants';
 
 
 export default function LoginScreen({ navigation }) {
@@ -30,7 +32,7 @@ export default function LoginScreen({ navigation }) {
 
     const textHash = await sha512(changedText);
     if(passHash && textHash === passHash) {
-      navigation.reset({ index: 0, routes: [{ name: "HomeScreen" }] });
+      navigation.reset({ index: 0, routes: [{ name: HomeScreenName }] });
     }
   }
 
@@ -38,11 +40,12 @@ export default function LoginScreen({ navigation }) {
   const onCreatePasswordClicked = async () => {
     savePassHash(await sha512(password));
 
-    navigation.reset({ index: 0, routes: [{ name: "HomeScreen" }] });
+    navigation.reset({ index: 0, routes: [{ name: HomeScreenName }] });
   }
 
 
   return (
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={ -100 }>
     <SafeAreaView style={styles.container}>
 
       <Text style={styles.titleText}>keep secret</Text>
@@ -63,6 +66,7 @@ export default function LoginScreen({ navigation }) {
       }
 
     </SafeAreaView>
+      </KeyboardAvoidingView>
   );
 }
 

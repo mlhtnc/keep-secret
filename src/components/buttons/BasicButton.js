@@ -8,8 +8,8 @@ export default function BasicButton({ style, textStyle, text, onPress, disabled 
   }
 
   return (
-    <View style={[styles.button, style]}>
-      <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#2e2e2e', true)} onPress={onPress} disabled={disabled}>
+    <View style={[styles.button, style, { overflow: "hidden" }]}>
+      <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#2e2e2e', false)} onPress={onPress} disabled={disabled}>
         <View style={[styles.buttonContentView, { backgroundColor: bg }]}>
           <Text style={textStyle}>{text}</Text>
         </View>
@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#111'
+    backgroundColor: '#111',
+    borderRadius: 25,
   },
 });

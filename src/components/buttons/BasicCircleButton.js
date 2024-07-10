@@ -4,8 +4,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 export default function BasicCircleButton({ style, onPress, disabled, iconName, iconSize }) {
 
   return (
-    <View style={[styles.button, style]}>
-      <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#7685a3', true)} onPress={onPress} disabled={disabled}>
+    <View style={[styles.button, style, { overflow: "hidden" }]}>
+      <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#7685a3', false)} onPress={onPress} disabled={disabled}>
         <View style={styles.buttonContentView}>
           <Icon name={iconName} size={iconSize} color="#fff" />
         </View>
@@ -16,8 +16,8 @@ export default function BasicCircleButton({ style, onPress, disabled, iconName, 
 
 const styles = StyleSheet.create({
   button: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     borderRadius: 25,
     backgroundColor: '#3b3b3b',
   },
@@ -25,10 +25,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#3b3b3b'
+    backgroundColor: '#3b3b3b',
+    borderRadius: 25
   },
-  buttonImage: {
-    width: 30,
-    height: 30
-  }
 });

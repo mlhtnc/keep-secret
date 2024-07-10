@@ -50,9 +50,9 @@ export default function AddEditSecretModal({ visible, setVisible, onAdded }) {
             />
 
             <BasicButton
-              style={{width: 100, height: 40, backgroundColor: '#000', marginTop: 30}}
+              style={{width: 130, height: 40, backgroundColor: '#000', marginTop: 30, borderRadius: 25}}
               textStyle={{ color: '#fffa'}}
-              text={"Add"}
+              text={"Create"}
               onPress={onAddButtonClicked}
             />
 

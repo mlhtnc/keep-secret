@@ -1,43 +1,47 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native';
 import uuid from 'react-native-uuid';
 
 import BasicCircleButton from '../components/buttons/BasicCircleButton';
 import AddEditSecretModal from '../components/AddEditSecretModal';
-import { decrypt, encrypt, sha512 } from '../crypto_utils';
-import { loadSecret, saveSecret } from '../utils/save_utils';
+import { decrypt, encrypt, sha512 } from '../utils/crypto_utils';
+import { loadPassHash, loadSecret, saveSecret } from '../utils/save_utils';
+import { SettingsScreenName } from '../../src/constants';
+import AlertModal from '../components/AlertModal';
 
+export default function HomeScreen({ navigation, route }) {
 
-export default function HomeScreen() {
+  const alertModalRef = useRef();
   
   const [ secretList, setSecretList ] = useState([]);
   const [ loading, setLoading ] = useState(true);
   const [ addEditSecretModalVisible, setAddEditSecretModalVisible ] = useState(false);
 
 
-  useEffect(() => {
-    initSecrets();
-  }, []);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', handleFocus);
+    return unsubscribe;
+  }, [navigation, route]);
+
+  const handleFocus = async () => {
+    initSecrets();
+  }
 
   const initSecrets = async () => {
     const secretCipherData = await loadSecret();
+    const passHash = await loadPassHash();
+
     if(!secretCipherData) {
       setLoading(false);
       return;
     }
     
-    decrypt("abc", secretCipherData.cipherText, secretCipherData.iv, secretCipherData.salt)
+    decrypt(passHash, secretCipherData.cipherText, secretCipherData.iv, secretCipherData.salt)
     .then((unencryptedText) => {
       const unencryptedSecretList = JSON.parse(unencryptedText);
 
-      const secretListWithId = unencryptedSecretList.map(i => ({
-        id: uuid.v4(),
-        info: i.info,
-        password: i.password
-      }));
-
-      setSecretList(secretListWithId);
+      setSecretList(unencryptedSecretList);
       setLoading(false);
     }).catch((err) => {
       console.log(err);
@@ -64,23 +68,28 @@ export default function HomeScreen() {
     const filteredSecretList = secretList.filter(i => i.id !== id);
     setSecretList(filteredSecretList);
 
-    encryptAndSave(filteredSecretList);
+    if(filteredSecretList.length === 0) {
+      saveSecret(null);
+    } else {
+      encryptAndSave(filteredSecretList);
+    }
   }
 
-  const encryptAndSave = (list) => {
-    const secretListWithoutId = list.map(i => ({
-      info: i.info,
-      password: i.password
-    }));
+  const encryptAndSave = async (list) => {
+    const passHash = await loadPassHash();
 
-    encrypt("abc", JSON.stringify(secretListWithoutId))
+    encrypt(passHash, JSON.stringify(list))
     .then(cipherData => {
       saveSecret(cipherData);
+      console.log('deleted')
     }).catch((err) => {
       console.log(err);
     });
   }
 
+  const onSettingsButtonClicked = () => {
+    navigation.navigate(SettingsScreenName);
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -95,17 +104,17 @@ export default function HomeScreen() {
               renderItem={({item}) => {
               
                 return (
-                  <View style={{ flexDirection: 'row', alignSelf: 'stretch', height: 60, backgroundColor: '#111'}}>
+                  <View style={{ flexDirection: 'row', alignSelf: 'stretch', height: 80, backgroundColor: '#111', borderBottomWidth: 1, borderBottomColor: '#fff2'}}>
 
-                    <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#333', true)} onPress={() => {}}>
+                    <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#333', true)}>
                       <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center'}}>
                         <View style={{flex: 1, paddingHorizontal: 20, justifyContent: 'center'}}>
-                          <Text style={{color: '#fff5'}}>{item.info}</Text>
-                          <Text style={{color: '#fff5'}}>{item.password}</Text>
+                          <Text style={{color: '#fff5', fontSize: 16}}>{item.info}</Text>
+                          <Text style={{color: '#fff5', fontSize: 16}}>{item.password}</Text>
                         </View>
 
                         <BasicCircleButton
-                          style={{ width: 30, height: 30, marginRight: 10 }}
+                          style={{ width: 40, height: 40, marginRight: 10 }}
                           onPress={() => onDeleteButtonClicked(item.id)}
                           iconName={'delete'}
                           iconSize={18}
@@ -114,7 +123,6 @@ export default function HomeScreen() {
 
                     </TouchableNativeFeedback>                
                   </View>
-
                 );
               }}
               keyExtractor={item => item.id}
@@ -126,36 +134,16 @@ export default function HomeScreen() {
 
       <BasicCircleButton
         style={styles.settingsButton}
-        onPress={async () => {
-
-          // encrypt("abc", "plain text alll right mate")
-          // .then(cipherData => {
-          //   console.log(cipherData);
-
-          //   decrypt("abc", cipherData.cipherText, cipherData.iv, cipherData.salt)
-          //   .then((unencryptedText) => {
-          //     console.log(unencryptedText);
-          //   }).catch((err) => {
-          //     console.log(err);
-          //   });
-
-          // }).catch((err) => {
-          //   console.log(err);
-          // });
-
-          
-
-
-        }}
+        onPress={onSettingsButtonClicked}
         iconName={'cog'}
-        iconSize={26}
+        iconSize={30}
       />
 
       <BasicCircleButton
         style={styles.plusButton}
         onPress={onAddButtonClicked}
         iconName={'plus'}
-        iconSize={30}
+        iconSize={34}
       />
 
       <AddEditSecretModal
@@ -163,6 +151,8 @@ export default function HomeScreen() {
         setVisible={setAddEditSecretModalVisible}
         onAdded={onAdded}
       />
+
+      <AlertModal forwardedRef={alertModalRef}/>
 
     </SafeAreaView>
   );
