@@ -8,6 +8,7 @@ import { decrypt, encrypt, sha512 } from '../utils/crypto_utils';
 import { loadPassHash, loadSecret, saveSecret } from '../utils/save_utils';
 import { SettingsScreenName } from '../../src/constants';
 import AlertModal from '../components/AlertModal';
+import SyncActivitiyIndicator from '../components/SyncActivitiyIndicator';
 
 export default function HomeScreen({ navigation, route }) {
 
@@ -16,7 +17,7 @@ export default function HomeScreen({ navigation, route }) {
   const [ secretList, setSecretList ] = useState([]);
   const [ loading, setLoading ] = useState(true);
   const [ addEditSecretModalVisible, setAddEditSecretModalVisible ] = useState(false);
-
+  const [ syncing, setSyncing ] = useState(false);
 
 
   useEffect(() => {
@@ -26,6 +27,7 @@ export default function HomeScreen({ navigation, route }) {
 
   const handleFocus = async () => {
     initSecrets();
+    console.log('x')
   }
 
   const initSecrets = async () => {
@@ -78,12 +80,14 @@ export default function HomeScreen({ navigation, route }) {
   const encryptAndSave = async (list) => {
     const passHash = await loadPassHash();
 
+    setSyncing(true);
     encrypt(passHash, JSON.stringify(list))
     .then(cipherData => {
       saveSecret(cipherData);
-      console.log('deleted')
     }).catch((err) => {
       console.log(err);
+    }).finally(() => {
+      setSyncing(false);
     });
   }
 
@@ -153,6 +157,8 @@ export default function HomeScreen({ navigation, route }) {
       />
 
       <AlertModal forwardedRef={alertModalRef}/>
+
+      <SyncActivitiyIndicator show={syncing} />
 
     </SafeAreaView>
   );
