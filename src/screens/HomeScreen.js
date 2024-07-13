@@ -11,6 +11,7 @@ import AlertModal from '../components/AlertModal';
 import SyncActivitiyIndicator from '../components/SyncActivitiyIndicator';
 import useStoragePermission from '../hooks/useStoragePermission';
 
+
 export default function HomeScreen({ navigation, route }) {
 
   const alertModalRef = useRef();
@@ -52,6 +53,10 @@ export default function HomeScreen({ navigation, route }) {
   }
 
   const onAddButtonClicked = () => {
+    if(syncing) {
+      return;
+    }
+
     setAddEditSecretModalVisible(true);
   }
 
@@ -68,6 +73,10 @@ export default function HomeScreen({ navigation, route }) {
   }
 
   const onDeleteButtonClicked = (id) => {
+    if(syncing) {
+      return;
+    }
+
     const filteredSecretList = secretList.filter(i => i.id !== id);
     setSecretList(filteredSecretList);
 
