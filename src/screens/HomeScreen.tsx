@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import uuid from 'react-native-uuid';
 
 import BasicCircleButton from '../components/buttons/BasicCircleButton';
 import AddEditSecretModal from '../components/AddEditSecretModal';
 import { decrypt, encrypt, sha512 } from '../utils/crypto_utils';
 import { loadPassHash, loadSecret, saveSecret } from '../utils/save_utils';
-import { SettingsScreenName } from '../constants';
+import { Colors, SettingsScreenName } from '../constants';
 import AlertModal from '../components/AlertModal';
 import SyncActivitiyIndicator from '../components/SyncActivitiyIndicator';
 import useStoragePermission from '../hooks/useStoragePermission';
@@ -176,7 +177,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#111',
+    backgroundColor: Colors.background,
     justifyContent: 'center'
   },
   settingsButton: {
@@ -190,7 +191,8 @@ const styles = StyleSheet.create({
     right: 10
   },
   noSecretText: {
-    color: '#666',
-    textAlign: 'center'
+    color: Colors.textPrimary,
+    textAlign: 'center',
+    fontSize: 16
   }
 });

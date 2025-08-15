@@ -2,6 +2,14 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { HomeScreenName, LoginScreenName, SettingsScreenName } from "./constants";
 import { GestureResponderEvent } from "react-native";
 
+
+export interface ColorsType {
+  background: string;
+  textPrimary: string;
+  success: string;
+  error: string;
+}
+
 export type RootStackParamList = {
   [LoginScreenName]: undefined;
   [HomeScreenName]: undefined;

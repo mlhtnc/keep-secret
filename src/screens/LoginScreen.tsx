@@ -1,18 +1,24 @@
 import { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ColorValue, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import BasicButton from '../components/buttons/BasicButton';
 import { sha512 } from '../utils/crypto_utils';
 import { loadPassHash, savePassHash } from '../utils/save_utils';
-import { HomeScreenName } from '../constants';
+import { Colors, HomeScreenName } from '../constants';
 import { LoginScreenProps } from '../types';
 
 
 export default function LoginScreen({ navigation }: LoginScreenProps) {
 
-  const [ password, setPassword ] = useState('');
-  const [ passwordExist, setPasswordExist ] = useState(true);
-  const [ passHash, setPassHash ] = useState('');
+  const [ password, setPassword ] = useState<string>('');
+  const [ confirmPassword, setConfirmPassword ] = useState<string>('');
+  const [ passwordExist, setPasswordExist ] = useState<boolean>(true);
+  const [ passHash, setPassHash ] = useState<string>('');
+  const [ confirmPasswordInputColor, setConfirmPasswordInputColor ] = useState<ColorValue>(Colors.success);
+  const [ passwordInputBorderWidth, setPasswordInputBorderWidth ] = useState<number>(0);
+  const [ confirmPasswordInputBorderWidth, setConfirmPasswordInputBorderWidth ] = useState<number>(0);
+
 
   useEffect(() => {
     initPassHash();
@@ -30,51 +36,122 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
 
   const onPassInputChanged = async (changedText: string) => {
     setPassword(changedText);
+    
+    if(passwordExist) {
+      return;
+    }
 
-    const textHash = await sha512(changedText);
+    if(changedText.length >= 8) {
+      setPasswordInputBorderWidth(1);
+    } else {
+      setPasswordInputBorderWidth(0);
+    }
+
+    if(changedText.length >= 8) {
+      if(changedText === confirmPassword) {
+        setConfirmPasswordInputColor(Colors.success);
+      } else {
+        setConfirmPasswordInputColor(Colors.error);
+      }
+    }
+  }
+
+  const onConfirmPassInputChanged = async (changedText: string) => {
+    setConfirmPassword(changedText);
+
+    if(changedText.length > 0) {
+      setConfirmPasswordInputBorderWidth(1);
+    } else {
+      setConfirmPasswordInputBorderWidth(0);
+    }
+
+    if(password === changedText) {
+      setConfirmPasswordInputColor(Colors.success);
+    } else {
+      setConfirmPasswordInputColor(Colors.error);
+    }
+  }
+
+
+  const onCreateButtonClicked = async () => {
+    if(password.length === 0) {
+      return;
+    }
+
+    if(password === confirmPassword) {
+      savePassHash(await sha512(password));
+
+      navigation.reset({ index: 0, routes: [{ name: HomeScreenName }] });
+    }
+  }
+
+  const onConfirmButtonClicked = async () => {
+    if(password.length === 0) {
+      return;
+    }
+
+    const textHash = await sha512(password);
     if(passHash && textHash === passHash) {
       navigation.reset({ index: 0, routes: [{ name: HomeScreenName }] });
     }
   }
 
 
-  const onCreatePasswordClicked = async () => {
-    savePassHash(await sha512(password));
-
-    navigation.reset({ index: 0, routes: [{ name: HomeScreenName }] });
-  }
-
-
   return (
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={ -100 }>
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={ -100 }>
+      <SafeAreaView style={styles.container}>
 
       <Text style={styles.titleText}>keep secret</Text>
 
+      <Text style={styles.passwordText}>Master Password</Text>
       <TextInput
-        style={styles.passInput}
+        style={[styles.passInput, { borderWidth: passwordInputBorderWidth }]}
         value={password}
         onChangeText={onPassInputChanged}
         secureTextEntry={true}
       />
 
-      { passwordExist ? null :
+      { !passwordExist ? null :
+
         <BasicButton
-          style={{ width: 150, height: 40, backgroundColor: '#fff4', marginTop: 20, alignSelf: 'center' }}
-          text={"Create Password"}
-          onPress={onCreatePasswordClicked}
+          style={styles.button}
+          text={"Confirm"}
+          textStyle={styles.buttonText}
+          onPress={onConfirmButtonClicked}
         />
       }
 
-    </SafeAreaView>
-      </KeyboardAvoidingView>
+      { passwordExist ? null :
+
+        <View>
+          <Text style={styles.passwordText}>Confirm Password</Text>
+          <TextInput
+            style={[styles.passInput, { borderColor: confirmPasswordInputColor, borderWidth: confirmPasswordInputBorderWidth }]}
+            value={confirmPassword}
+            onChangeText={onConfirmPassInputChanged}
+            secureTextEntry={true}
+          />
+        
+
+          <BasicButton
+            style={styles.button}
+            text={"Create"}
+            textStyle={styles.buttonText}
+            onPress={onCreateButtonClicked}
+          />
+        </View>
+
+      }
+
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#111',
+    backgroundColor: Colors.background,
     padding: 10,
     justifyContent: 'center'
   },
@@ -85,13 +162,32 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginHorizontal: 30,
     paddingHorizontal: 10,
-    color: '#fffa'
+    color: '#fffa',
+    marginBottom: 10,
+    borderColor: Colors.success
   },
   titleText: {
     textAlign: 'center',
-    color: '#fff',
+    color: Colors.textPrimary,
     marginBottom: 50,
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold'
+  },
+  passwordText: {
+    marginHorizontal: 30,
+    marginBottom: 4,
+    color: "#586572ff",
+    fontSize: 12,
+    fontWeight: 'bold'
+  },
+  button: {
+    width: 150,
+    height: 40,
+    backgroundColor: '#fff4',
+    marginTop: 20,
+    alignSelf: 'center'
+  },
+  buttonText: {
+    fontSize: 16,
   }
 });

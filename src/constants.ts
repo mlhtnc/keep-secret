@@ -1,11 +1,16 @@
-import { ErrorMessage } from "./types";
+import { ErrorMessage, ColorsType } from "./types";
 
 export const LoginScreenName: string = "LoginScreen";
 export const HomeScreenName: string = "HomeScreen";
 export const SettingsScreenName: string = "SettingsScreen";
 
 
-
+export const Colors: ColorsType = {
+  background: "#15202B",
+  textPrimary: "#E7E9EA",
+  success: "#00BA7C",
+  error: "#F4212E"
+}
 
 export const CannotImportAlreadyHaveSecretsAlertMessage: ErrorMessage = {
   title: "Cannot Import",

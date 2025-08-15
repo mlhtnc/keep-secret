@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import RNFS from 'react-native-fs';
 // import DocumentPicker, { types } from '@react-native-documents/picker';
 
