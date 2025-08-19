@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { ColorValue, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import BasicButton from '../components/buttons/BasicButton';
 import { sha512 } from '../utils/crypto_utils';
@@ -81,69 +80,73 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
     if(password === confirmPassword) {
       savePassHash(await sha512(password));
 
-      navigation.reset({ index: 0, routes: [{ name: HomeScreenName }] });
+      navigation.reset({ index: 0, routes: [{ name: HomeScreenName, params: { masterPassword: password } }] });
     }
   }
 
   const onConfirmButtonClicked = async () => {
+    // HACK: for testing purposes, remove this in production
+    navigation.reset({ index: 0, routes: [{ name: HomeScreenName, params: { masterPassword: password } }] });
+    return;
+
     if(password.length === 0) {
       return;
     }
 
     const textHash = await sha512(password);
     if(passHash && textHash === passHash) {
-      navigation.reset({ index: 0, routes: [{ name: HomeScreenName }] });
+      navigation.reset({ index: 0, routes: [{ name: HomeScreenName, params: { masterPassword: password } }] });
     }
   }
 
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={ -100 }>
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
 
-      <Text style={styles.titleText}>keep secret</Text>
+        <Text style={styles.titleText}>keep secret</Text>
 
-      <Text style={styles.passwordText}>Master Password</Text>
-      <TextInput
-        style={[styles.passInput, { borderWidth: passwordInputBorderWidth }]}
-        value={password}
-        onChangeText={onPassInputChanged}
-        secureTextEntry={true}
-      />
-
-      { !passwordExist ? null :
-
-        <BasicButton
-          style={styles.button}
-          text={"Confirm"}
-          textStyle={styles.buttonText}
-          onPress={onConfirmButtonClicked}
+        <Text style={styles.passwordText}>Master Password</Text>
+        <TextInput
+          style={[styles.passInput, { borderWidth: passwordInputBorderWidth }]}
+          value={password}
+          onChangeText={onPassInputChanged}
+          secureTextEntry={true}
         />
-      }
 
-      { passwordExist ? null :
-
-        <View>
-          <Text style={styles.passwordText}>Confirm Password</Text>
-          <TextInput
-            style={[styles.passInput, { borderColor: confirmPasswordInputColor, borderWidth: confirmPasswordInputBorderWidth }]}
-            value={confirmPassword}
-            onChangeText={onConfirmPassInputChanged}
-            secureTextEntry={true}
-          />
-        
+        { !passwordExist ? null :
 
           <BasicButton
             style={styles.button}
-            text={"Create"}
+            text={"Confirm"}
             textStyle={styles.buttonText}
-            onPress={onCreateButtonClicked}
+            onPress={onConfirmButtonClicked}
           />
-        </View>
+        }
 
-      }
+        { passwordExist ? null :
 
-      </SafeAreaView>
+          <View>
+            <Text style={styles.passwordText}>Confirm Password</Text>
+            <TextInput
+              style={[styles.passInput, { borderColor: confirmPasswordInputColor, borderWidth: confirmPasswordInputBorderWidth }]}
+              value={confirmPassword}
+              onChangeText={onConfirmPassInputChanged}
+              secureTextEntry={true}
+            />
+          
+
+            <BasicButton
+              style={styles.button}
+              text={"Create"}
+              textStyle={styles.buttonText}
+              onPress={onCreateButtonClicked}
+            />
+          </View>
+
+        }
+
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -183,7 +186,7 @@ const styles = StyleSheet.create({
   button: {
     width: 150,
     height: 40,
-    backgroundColor: '#fff4',
+    backgroundColor: '#46538dff',
     marginTop: 20,
     alignSelf: 'center'
   },

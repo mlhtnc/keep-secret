@@ -1,15 +1,19 @@
-import { ErrorMessage, ColorsType } from "./types";
+import { ErrorMessage, ColorsType, SecretItem } from "./types";
 
-export const LoginScreenName: string = "LoginScreen";
-export const HomeScreenName: string = "HomeScreen";
-export const SettingsScreenName: string = "SettingsScreen";
+export const LoginScreenName = "LoginScreen";
+export const HomeScreenName = "HomeScreen";
+export const DetailsScreenName = "DetailsScreen";
+export const SettingsScreenName = "SettingsScreen";
 
 
 export const Colors: ColorsType = {
   background: "#15202B",
   textPrimary: "#E7E9EA",
+  textSecondary: "#8899A6",
+  buttonPrimary: "#46538dff",
   success: "#00BA7C",
-  error: "#F4212E"
+  error: "#F4212E",
+  border: "#2F3336"
 }
 
 export const CannotImportAlreadyHaveSecretsAlertMessage: ErrorMessage = {
@@ -35,4 +39,12 @@ export const CannotExportNoSecretsAlertMessage: ErrorMessage = {
 export const CannotExportSecretFileAlreadyExistAlertMessage: ErrorMessage = {
   title: "Cannot Export",
   description: "You already have keep.secret file in your Downloads folder. Please rename or move your keep.secret file"
+}
+
+export const EmpytSecretItem: SecretItem = {
+  id: "",
+  name: '',
+  username: '',
+  password: '',
+  notes: ''
 }

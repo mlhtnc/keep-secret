@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import RNFS from 'react-native-fs';
 // import DocumentPicker, { types } from '@react-native-documents/picker';
 
@@ -88,7 +87,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
 
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
 
       <ScrollView>
         <SettingsListElement
@@ -109,7 +108,7 @@ export default function SettingsScreen({ navigation }: SettingsScreenProps) {
 
       <SyncActivitiyIndicator show={syncing} />
 
-    </SafeAreaView>
+    </View>
   );
 }
 

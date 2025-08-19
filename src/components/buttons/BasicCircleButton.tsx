@@ -1,38 +1,32 @@
-import { StyleSheet, View, TouchableNativeFeedback, ViewStyle, TextStyle, GestureResponderEvent } from "react-native";
-// import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // FIXME
+import { StyleSheet, View, ViewStyle, GestureResponderEvent, TouchableOpacity } from "react-native";
+import Icon from '@react-native-vector-icons/ionicons';
+import { Colors } from "../../constants";
 
 
 interface BasicCircleButtonProps {
   style?: ViewStyle;
   onPress: (event: GestureResponderEvent) => void;
   disabled?: boolean;
+  iconName: string;
+  iconSize: number;
 }
 
-export default function BasicCircleButton({ style, onPress, disabled /*FIXME: iconName, iconSize */ }: BasicCircleButtonProps) {
+export default function BasicCircleButton({ style, onPress, disabled, iconName, iconSize }: BasicCircleButtonProps) {
 
   return (
-    <View style={[styles.button, style, { overflow: "hidden" }]}>
-      <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#7685a3', false)} onPress={onPress} disabled={disabled}>
-        <View style={styles.buttonContentView}>
-          {/* <Icon name={iconName} size={iconSize} color="#fff" /> */}
-        </View>
-      </TouchableNativeFeedback>
-    </View>
+    <TouchableOpacity style={[styles.button, style]} onPress={onPress} disabled={disabled}>
+      <Icon name={iconName as any} size={iconSize} color="#fff" />
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     borderRadius: 25,
-    backgroundColor: '#3b3b3b',
-  },
-  buttonContentView: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#3b3b3b',
-    borderRadius: 25
+    backgroundColor: Colors.background,
   },
 });

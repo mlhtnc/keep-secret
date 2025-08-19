@@ -1,53 +1,40 @@
-import { useEffect, useRef, useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import uuid from 'react-native-uuid';
+import { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 import BasicCircleButton from '../components/buttons/BasicCircleButton';
-import AddEditSecretModal from '../components/AddEditSecretModal';
-import { decrypt, encrypt, sha512 } from '../utils/crypto_utils';
-import { loadPassHash, loadSecret, saveSecret } from '../utils/save_utils';
-import { Colors, SettingsScreenName } from '../constants';
-import AlertModal from '../components/AlertModal';
+import { decrypt, encrypt } from '../utils/crypto_utils';
+import { loadSecret, saveSecret } from '../utils/save_utils';
+import { Colors, DetailsScreenName, EmpytSecretItem } from '../constants';
 import SyncActivitiyIndicator from '../components/SyncActivitiyIndicator';
-import useStoragePermission from '../hooks/useStoragePermission';
-import { AlertModalRef, HomeScreenProps, SecretItem, SecretModalInfoOnAdd } from '../types';
+import { HomeScreenProps, SecretItem } from '../types';
+import ScreenHeader from '../components/ScreenHeader';
+import HomeNoSecret from '../components/HomeNoSecret';
+import HomeSecretList from '../components/HomeSecretList';
+
 
 export default function HomeScreen({ navigation, route }: HomeScreenProps) {
 
-  const alertModalRef = useRef<AlertModalRef>(null);
+  const { masterPassword } = route.params || {};
   
   const [ secretList, setSecretList ] = useState<SecretItem[]>([]);
-  const [ loading, setLoading ] = useState<boolean>(true);
-  const [ addEditSecretModalVisible, setAddEditSecretModalVisible ] = useState<boolean>(false);
   const [ syncing, setSyncing ] = useState<boolean>(false);
 
-  useStoragePermission();
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', handleFocus);
-    return unsubscribe;
-  }, [navigation, route]);
-
-  const handleFocus = async () => {
     initSecrets();
-  }
+  }, []);
 
   const initSecrets = async () => {
     const secretCipherData = await loadSecret();
-    const passHash = await loadPassHash();
 
     if(!secretCipherData) {
-      setLoading(false);
       return;
     }
     
-    decrypt(passHash, secretCipherData.cipherText, secretCipherData.iv, secretCipherData.salt)
+    decrypt(masterPassword, secretCipherData.cipherText, secretCipherData.iv, secretCipherData.salt)
     .then((unencryptedText) => {
       const unencryptedSecretList: SecretItem[] = JSON.parse(unencryptedText as string);
-
       setSecretList(unencryptedSecretList);
-      setLoading(false);
     }).catch((err) => {
       console.log(err);
     });
@@ -58,40 +45,54 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
       return;
     }
 
-    setAddEditSecretModalVisible(true);
+    navigation.navigate(
+      DetailsScreenName,
+      {
+        secret: EmpytSecretItem,
+        onConfirm,
+        onDelete
+      }
+    );
   }
 
-  const onAdded = (newSecret: SecretModalInfoOnAdd) => {
-    const newSecretList: SecretItem[] = [ ...secretList, {
-      id: uuid.v4(),
-      info: newSecret.info,
-      password: newSecret.password
-    }];
-
+  const onConfirm = (confirmedSecretItem: SecretItem) => {
+    const reducedSecretList = secretList.filter(i => i.id !== confirmedSecretItem.id);
+    const newSecretList = [ confirmedSecretItem, ...reducedSecretList ];
+  
     setSecretList(newSecretList);
+
     encryptAndSave(newSecretList);
   }
 
-  const onDeleteButtonClicked = (id: string) => {
+  const onDelete = (id: string) => {
+    console.log("Delete Secret with id: ", id);
+    const reducedSecretList = secretList.filter(i => i.id !== id);
+    setSecretList(reducedSecretList);
+
+    encryptAndSave(reducedSecretList);
+  }
+
+  const onSecretItemClicked = (item: SecretItem) => {
     if(syncing) {
       return;
     }
 
-    const filteredSecretList = secretList.filter(i => i.id !== id);
-    setSecretList(filteredSecretList);
-
-    if(filteredSecretList.length === 0) {
-      saveSecret(null);
-    } else {
-      encryptAndSave(filteredSecretList);
-    }
+    navigation.navigate(
+      DetailsScreenName,
+      {
+        secret: item,
+        onConfirm,
+        onDelete
+      }
+    );
   }
 
   const encryptAndSave = async (list: SecretItem[]) => {
-    const passHash = await loadPassHash();
+    
+    console.log(JSON.stringify(list));
 
     setSyncing(true);
-    encrypt(passHash, JSON.stringify(list))
+    encrypt(masterPassword, JSON.stringify(list))
     .then(cipherData => {
       saveSecret(cipherData);
     }).catch((err) => {
@@ -100,77 +101,34 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
       setSyncing(false);
     });
   }
+  
+  console.log(secretList);
 
-  const onSettingsButtonClicked = () => {
-    navigation.navigate(SettingsScreenName);
-  }
 
   return (
-    <SafeAreaView style={styles.container}>
-
-      { loading ? null :
-         secretList.length === 0 ?
-          <Text style={styles.noSecretText}>No secrets found.{'\n'} Add new one then it will be listed here.</Text>
-          :
-          <View style={{ flex: 1, marginTop: 10, marginBottom: 70}}> 
-            <FlatList
-              data={secretList}
-              renderItem={({item}) => {
-              
-                return (
-                  <View style={{ flexDirection: 'row', alignSelf: 'stretch', height: 80, backgroundColor: '#111', borderBottomWidth: 1, borderBottomColor: '#fff2'}}>
-
-                    <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#333', true)}>
-                      <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center'}}>
-                        <View style={{flex: 1, paddingHorizontal: 20, justifyContent: 'center'}}>
-                          <Text style={{color: '#fff5', fontSize: 16}}>{item.info}</Text>
-                          <Text style={{color: '#fff5', fontSize: 16}}>{item.password}</Text>
-                        </View>
-
-                        <BasicCircleButton
-                          style={{ width: 40, height: 40, marginRight: 10 }}
-                          onPress={() => onDeleteButtonClicked(item.id)}
-                          // iconName={'delete'}
-                          // iconSize={18}
-                        />
-                      </View>
-
-                    </TouchableNativeFeedback>                
-                  </View>
-                );
-              }}
-              keyExtractor={item => item.id}
-            />
-          </View>
-      }
+    <View style={styles.container}>
+      <ScreenHeader title={"Keep Secret"} hideEditButton={true} />
       
+      <View style={styles.listContainer}>
 
-
-      <BasicCircleButton
-        style={styles.settingsButton}
-        onPress={onSettingsButtonClicked}
-        // iconName={'cog'}
-        // iconSize={30}
-      />
+        { secretList.length === 0 ?
+            <HomeNoSecret />
+            :
+            <HomeSecretList secretList={secretList} onSecretItemClicked={onSecretItemClicked} />    
+        }
+      
+      </View>
 
       <BasicCircleButton
         style={styles.plusButton}
         onPress={onAddButtonClicked}
-        // iconName={'plus'}
-        // iconSize={34}
-      />
-
-      <AddEditSecretModal
-        visible={addEditSecretModalVisible}
-        setVisible={setAddEditSecretModalVisible}
-        onAdded={onAdded}
-      />
-
-      <AlertModal forwardedRef={alertModalRef}/>
+        iconName={'add'}
+        iconSize={34}
+      /> 
 
       <SyncActivitiyIndicator show={syncing} />
 
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -178,7 +136,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    justifyContent: 'center'
+  },
+  listContainer: {
+    flex: 1,
+    marginBottom: 70,
+    backgroundColor: Colors.background,
+    justifyContent: 'center',
   },
   settingsButton: {
     position: 'absolute',
@@ -188,11 +151,21 @@ const styles = StyleSheet.create({
   plusButton: {
     position: 'absolute',
     bottom: 10,
-    right: 10
+    right: 10,
+    backgroundColor: Colors.buttonPrimary,
   },
-  noSecretText: {
-    color: Colors.textPrimary,
-    textAlign: 'center',
-    fontSize: 16
+  listItemContainer: {
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    height: 80,
+    backgroundColor: Colors.background,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  listItemButton: {
+    flex: 1,
+    paddingLeft: 20,
+    justifyContent: 'center',
+    backgroundColor: Colors.background
   }
 });
