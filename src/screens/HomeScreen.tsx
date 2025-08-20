@@ -17,7 +17,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
   const { masterPassword } = route.params || {};
   
   const [ secretList, setSecretList ] = useState<SecretItem[]>([]);
-  const [ loading, setLoading ] = useState<boolean>(true);
+  const [ loading, setLoading ] = useState<boolean>(false);
   const [ syncing, setSyncing ] = useState<boolean>(false);
 
 
