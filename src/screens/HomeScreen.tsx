@@ -65,7 +65,6 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
   }
 
   const onDelete = (id: string) => {
-    console.log("Delete Secret with id: ", id);
     const reducedSecretList = secretList.filter(i => i.id !== id);
     setSecretList(reducedSecretList);
 
@@ -88,9 +87,6 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
   }
 
   const encryptAndSave = async (list: SecretItem[]) => {
-    
-    console.log(JSON.stringify(list));
-
     setSyncing(true);
     encrypt(masterPassword, JSON.stringify(list))
     .then(cipherData => {
@@ -102,8 +98,6 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
     });
   }
   
-  console.log(secretList);
-
 
   return (
     <View style={styles.container}>

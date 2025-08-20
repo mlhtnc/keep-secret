@@ -85,10 +85,6 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
   }
 
   const onConfirmButtonClicked = async () => {
-    // HACK: for testing purposes, remove this in production
-    navigation.reset({ index: 0, routes: [{ name: HomeScreenName, params: { masterPassword: password } }] });
-    return;
-
     if(password.length === 0) {
       return;
     }
