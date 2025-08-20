@@ -142,29 +142,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     justifyContent: 'center',
   },
-  settingsButton: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10
-  },
   plusButton: {
+    width: 50,
+    height: 50,
     position: 'absolute',
     bottom: 10,
     right: 10,
     backgroundColor: Colors.buttonPrimary,
-  },
-  listItemContainer: {
-    flexDirection: 'row',
-    alignSelf: 'stretch',
-    height: 80,
-    backgroundColor: Colors.background,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
-  },
-  listItemButton: {
-    flex: 1,
-    paddingLeft: 20,
-    justifyContent: 'center',
-    backgroundColor: Colors.background
   }
 });

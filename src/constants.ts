@@ -3,7 +3,6 @@ import { ErrorMessage, ColorsType, SecretItem } from "./types";
 export const LoginScreenName = "LoginScreen";
 export const HomeScreenName = "HomeScreen";
 export const DetailsScreenName = "DetailsScreen";
-export const SettingsScreenName = "SettingsScreen";
 
 
 export const Colors: ColorsType = {

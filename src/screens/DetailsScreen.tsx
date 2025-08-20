@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import uuid from 'react-native-uuid';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 import BasicButton from '../components/buttons/BasicButton';
 import { Colors } from '../constants';
 import { DetailsScreenProps, SecretItem } from '../types';
 import ScreenHeader from '../components/ScreenHeader';
 import BasicCircleButton from '../components/buttons/BasicCircleButton';
-import Clipboard from '@react-native-clipboard/clipboard';
 
 
 export default function DetailsScreen({ navigation, route }: DetailsScreenProps) {
@@ -30,17 +30,23 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
   }, []);
 
   const onConfirmButtonClicked = () => {
-    if(secret) {
-      const confirmedSecretItem: SecretItem = {
-        id: secret.id !== "" ? secret.id : uuid.v4(),
-        name: name,
-        username: username,
-        password: password,
-        notes: notes,
-      }
-
-      onConfirm?.(confirmedSecretItem);
+    if(!secret) {
+      return;
     }
+
+    if(name === "" || username === "" || password === "") {
+      return;
+    }
+
+    const confirmedSecretItem: SecretItem = {
+      id: secret.id !== "" ? secret.id : uuid.v4(),
+      name: name,
+      username: username,
+      password: password,
+      notes: notes,
+    }
+
+    onConfirm?.(confirmedSecretItem);
 
     navigation.goBack();
   }
@@ -67,9 +73,9 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
 
       <ScreenHeader title={ name } onTitleChanged={ onNameChanged } />
 
-      <View style={{ flex: 1, paddingTop: 20 }}>
+      <View style={styles.content}>
 
-        <Text style={styles.passwordText}>Username</Text>
+        <Text style={styles.inputTitle}>Username</Text>
 
         <View style={styles.inputContainer}>
           <TextInput
@@ -80,7 +86,7 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
           <BasicCircleButton iconName={'copy-outline'} iconSize={24} onPress={() => copyToClipboard(username)} />
         </View>
 
-        <Text style={styles.passwordText}>Password</Text>
+        <Text style={styles.inputTitle}>Password</Text>
 
         <View style={styles.inputContainer}>
           <TextInput
@@ -92,7 +98,7 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
           <BasicCircleButton iconName={'copy-outline'} iconSize={24} onPress={() => copyToClipboard(password)} />
         </View>
 
-        <Text style={styles.passwordText}>Notes</Text>
+        <Text style={styles.inputTitle}>Notes</Text>
         <TextInput
           style={styles.notesInput}
           value={notes}
@@ -127,6 +133,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
+  },
+  content: {
+    flex: 1,
+    paddingTop: 20
   },
   inputContainer: {
     justifyContent: 'space-between',
@@ -169,7 +179,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     fontSize: 16,
   },
-  passwordText: {
+  inputTitle: {
     marginHorizontal: 20,
     marginBottom: 4,
     color: "#586572ff",
