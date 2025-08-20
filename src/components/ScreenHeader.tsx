@@ -51,22 +51,23 @@ export default function ScreenHeader({ title, onTitleChanged, hideEditButton=fal
 
 const styles = StyleSheet.create({
   header: {
-    height: 50,
+    height: 60,
     backgroundColor: Colors.background,
     borderColor: Colors.border,
     borderBottomWidth: 1,
     justifyContent: 'space-between',
   },
   titleContainer: {
-    height: 48,
+    height: 58,
     backgroundColor: Colors.background,
     flexDirection: 'row',
     marginHorizontal: 20,
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   passInput: {
     width: '80%',
-    height: 46,
+    height: 56,
     color: Colors.textPrimary,
     backgroundColor: Colors.background,
     fontSize: 20,

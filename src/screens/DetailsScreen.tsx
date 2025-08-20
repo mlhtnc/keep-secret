@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     justifyContent: 'space-between',
+    alignItems: 'center',
     backgroundColor: Colors.background,
     flexDirection: 'row',
     marginHorizontal: 20,
