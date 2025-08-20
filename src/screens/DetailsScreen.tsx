@@ -3,11 +3,12 @@ import { StyleSheet, Text, TextInput, View } from 'react-native';
 import uuid from 'react-native-uuid';
 
 import BasicButton from '../components/buttons/BasicButton';
-import { encrypt } from '../utils/crypto_utils';
-import { loadPassHash, saveSecret } from '../utils/save_utils';
 import { Colors } from '../constants';
-import { DetailsScreenProps, SecretItem, SecretModalInfoOnAdd } from '../types';
+import { DetailsScreenProps, SecretItem } from '../types';
 import ScreenHeader from '../components/ScreenHeader';
+import BasicCircleButton from '../components/buttons/BasicCircleButton';
+import Clipboard from '@react-native-clipboard/clipboard';
+
 
 export default function DetailsScreen({ navigation, route }: DetailsScreenProps) {
 
@@ -56,6 +57,10 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
     setName(name);
   }
 
+  const copyToClipboard = (text: string) => {
+    Clipboard.setString(text);
+  }
+
 
   return (
     <View style={styles.container}>
@@ -65,23 +70,31 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
       <View style={{ flex: 1, paddingTop: 20 }}>
 
         <Text style={styles.passwordText}>Username</Text>
-        <TextInput
-          style={ styles.passInput }
-          value={username}
-          onChangeText={setUsername}
-        />
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={ styles.usernameInput }
+            value={username}
+            onChangeText={setUsername}
+          />
+          <BasicCircleButton iconName={'copy-outline'} iconSize={24} onPress={() => copyToClipboard(username)} />
+        </View>
 
         <Text style={styles.passwordText}>Password</Text>
-        <TextInput
-          style={ styles.passInput }
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={true}
-        />
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={ styles.passwordInput }
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={true}
+          />
+          <BasicCircleButton iconName={'copy-outline'} iconSize={24} onPress={() => copyToClipboard(password)} />
+        </View>
 
         <Text style={styles.passwordText}>Notes</Text>
         <TextInput
-          style={[ styles.passInput, { height: 100 } ]}
+          style={styles.notesInput}
           value={notes}
           onChangeText={setNotes}
           multiline={true}
@@ -105,9 +118,7 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
           />
 
         </View>
-      
       </View>
-
     </View>
   );
 }
@@ -117,8 +128,37 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
-  passInput: {
+  inputContainer: {
+    justifyContent: 'space-between',
+    backgroundColor: Colors.background,
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    marginBottom: 20,
+  },
+  usernameInput: {
+    flex: 1,
     height: 40,
+    alignSelf: 'stretch',
+    paddingHorizontal: 10,
+    color: '#fffa',
+    borderColor: Colors.border,
+    borderBottomWidth: 1,
+    textAlignVertical: 'top',
+    fontSize: 16,
+  },
+  passwordInput: {
+    flex: 1,
+    height: 40,
+    alignSelf: 'stretch',
+    paddingHorizontal: 10,
+    color: '#fffa',
+    borderColor: Colors.border,
+    borderBottomWidth: 1,
+    textAlignVertical: 'top',
+    fontSize: 16,
+  },
+  notesInput: {
+    height: 100,
     alignSelf: 'stretch',
     marginHorizontal: 20,
     paddingHorizontal: 10,

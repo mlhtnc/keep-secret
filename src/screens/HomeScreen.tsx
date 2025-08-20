@@ -17,6 +17,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
   const { masterPassword } = route.params || {};
   
   const [ secretList, setSecretList ] = useState<SecretItem[]>([]);
+  const [ loading, setLoading ] = useState<boolean>(true);
   const [ syncing, setSyncing ] = useState<boolean>(false);
 
 
@@ -31,12 +32,16 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
       return;
     }
     
+    setLoading(true);
+
     decrypt(masterPassword, secretCipherData.cipherText, secretCipherData.iv, secretCipherData.salt)
     .then((unencryptedText) => {
       const unencryptedSecretList: SecretItem[] = JSON.parse(unencryptedText as string);
       setSecretList(unencryptedSecretList);
     }).catch((err) => {
       console.log(err);
+    }).finally(() => {
+      setLoading(false);
     });
   }
 
@@ -105,10 +110,10 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
       
       <View style={styles.listContainer}>
 
-        { secretList.length === 0 ?
+        { loading ? null : secretList.length === 0 ?
             <HomeNoSecret />
             :
-            <HomeSecretList secretList={secretList} onSecretItemClicked={onSecretItemClicked} />    
+            <HomeSecretList secretList={secretList} onSecretItemClicked={onSecretItemClicked} />
         }
       
       </View>
