@@ -15,7 +15,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor: Colors.background }} >
-        <StatusBar translucent barStyle="light-content" />
+        <StatusBar translucent backgroundColor={"transparent"} barStyle="light-content" />
           <NavigationContainer>
             <Stack.Navigator initialRouteName={LoginScreenName} screenOptions={{ headerShown: false, animation: 'none' }}>
               <Stack.Screen name={LoginScreenName} component={LoginScreen} />
