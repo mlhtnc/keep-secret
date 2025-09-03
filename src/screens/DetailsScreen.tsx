@@ -55,7 +55,7 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
     if(secret) {
       onDelete?.(secret.id);
     }
-
+    
     navigation.goBack();
   }
 
@@ -109,12 +109,16 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
 
         <View style={styles.buttonGroup}>
 
-          <BasicButton
-            style={[ styles.button, { marginRight: 10 } ]}
-            text={"DELETE"}
-            textStyle={styles.buttonText}
-            onPress={onDeleteButtonClicked}
-          />
+          { secret?.id !== "" ?
+            <BasicButton
+              style={[ styles.button, { marginRight: 10 } ]}
+              text={"DELETE"}
+              textStyle={styles.buttonText}
+              onPress={onDeleteButtonClicked}
+            />
+            :
+            null
+          }
 
           <BasicButton
             style={styles.button}
