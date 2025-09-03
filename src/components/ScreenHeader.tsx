@@ -41,7 +41,7 @@ export default function ScreenHeader({ title, onTitleChanged, hideEditButton=fal
         />
 
         {!hideEditButton &&
-          <BasicCircleButton style={{width: 40, height: 40 }} iconName='pencil' iconSize={24} onPress={ toggleEdit } />
+          <BasicCircleButton style={{width: 40, height: 40}} iconColor={"#fff"} iconName='pencil' iconSize={24} onPress={ toggleEdit } />
         }
       </View>
     </View>

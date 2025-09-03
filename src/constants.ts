@@ -6,10 +6,10 @@ export const DetailsScreenName = "DetailsScreen";
 
 
 export const Colors: ColorsType = {
-  background: "#15202B",
+  background: "#000",
   textPrimary: "#E7E9EA",
   textSecondary: "#8899A6",
-  buttonPrimary: "#46538dff",
+  buttonPrimary: "#EDAE46",
   success: "#00BA7C",
   error: "#F4212E",
   border: "#2F3336"

@@ -1,4 +1,4 @@
-import { StyleSheet, View, ViewStyle, GestureResponderEvent, TouchableOpacity } from "react-native";
+import { StyleSheet, View, ViewStyle, GestureResponderEvent, TouchableOpacity, ColorValue } from "react-native";
 import Icon from '@react-native-vector-icons/ionicons';
 import { Colors } from "../../constants";
 
@@ -9,13 +9,14 @@ interface BasicCircleButtonProps {
   disabled?: boolean;
   iconName: string;
   iconSize: number;
+  iconColor?: ColorValue;
 }
 
-export default function BasicCircleButton({ style, onPress, disabled, iconName, iconSize }: BasicCircleButtonProps) {
+export default function BasicCircleButton({ style, onPress, disabled, iconName, iconSize, iconColor }: BasicCircleButtonProps) {
 
   return (
     <TouchableOpacity style={[styles.button, style]} onPress={onPress} disabled={disabled}>
-      <Icon name={iconName as any} size={iconSize} color="#fff" />
+      <Icon name={iconName as any} size={iconSize} color={iconColor} />
     </TouchableOpacity>
   );
 }

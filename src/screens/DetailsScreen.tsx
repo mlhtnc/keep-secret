@@ -83,7 +83,7 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
             value={username}
             onChangeText={setUsername}
           />
-          <BasicCircleButton iconName={'copy-outline'} iconSize={24} onPress={() => copyToClipboard(username)} />
+          <BasicCircleButton iconColor={"#fff"} iconName={'copy-outline'} iconSize={24} onPress={() => copyToClipboard(username)} />
         </View>
 
         <Text style={styles.inputTitle}>Password</Text>
@@ -95,7 +95,7 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
             onChangeText={setPassword}
             secureTextEntry={true}
           />
-          <BasicCircleButton iconName={'copy-outline'} iconSize={24} onPress={() => copyToClipboard(password)} />
+          <BasicCircleButton iconColor={"#fff"} iconName={'copy-outline'} iconSize={24} onPress={() => copyToClipboard(password)} />
         </View>
 
         <Text style={styles.inputTitle}>Notes</Text>
@@ -195,11 +195,10 @@ const styles = StyleSheet.create({
   button: {
     width: 150,
     height: 40,
-    backgroundColor: '#46538dff',
     alignSelf: 'center'
   },
   buttonText: {
     fontSize: 16,
-    color: Colors.textPrimary
+    color: "#000"
   },
 });

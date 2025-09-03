@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableNativeFeedback, Text, ViewStyle, TextStyle, GestureResponderEvent, ColorValue, StyleProp } from "react-native";
+import { StyleSheet, View, TouchableNativeFeedback, Text, ViewStyle, TextStyle, GestureResponderEvent, ColorValue, StyleProp, TouchableOpacity } from "react-native";
 import { Colors } from "../../constants";
 
 interface BasicButtonProps {
@@ -13,19 +13,16 @@ export default function BasicButton({ style, textStyle, text, onPress, disabled 
   
   const flattenedStyle = StyleSheet.flatten(style) as ViewStyle | undefined;
 
-  let bg: ColorValue = '#111';
+  let bg: ColorValue = Colors.buttonPrimary;
   if (flattenedStyle?.backgroundColor) {
     bg = flattenedStyle.backgroundColor;
   }
   
-  // FIXME: Change this with TouchableOpacity
   return (
     <View style={[styles.button, style, { overflow: "hidden" }]}>
-      <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#2e2e2e', false)} onPress={onPress} disabled={disabled}>
-        <View style={[styles.buttonContentView, { backgroundColor: bg }]}>
-          <Text style={textStyle}>{text}</Text>
-        </View>
-      </TouchableNativeFeedback>
+      <TouchableOpacity style={[styles.buttonContentView, { backgroundColor: bg }]} onPress={onPress} disabled={disabled} activeOpacity={0.7}>
+        <Text style={textStyle}>{text}</Text>
+      </TouchableOpacity>
     </View>
   );
 }
