@@ -34,6 +34,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
     
     setLoading(true);
 
+    setSyncing(true);
     decrypt(masterPassword, secretCipherData.cipherText, secretCipherData.iv, secretCipherData.salt)
     .then((unencryptedText) => {
       const unencryptedSecretList: SecretItem[] = JSON.parse(unencryptedText as string);
@@ -42,6 +43,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
       console.log(err);
     }).finally(() => {
       setLoading(false);
+      setSyncing(false);
     });
   }
 
