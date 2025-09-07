@@ -8,6 +8,7 @@ import { Colors } from '../constants';
 import { DetailsScreenProps, SecretItem } from '../types';
 import ScreenHeader from '../components/ScreenHeader';
 import BasicCircleButton from '../components/buttons/BasicCircleButton';
+import useOverrideBackPress from '../hooks/useOverrideBackPress';
 
 
 export default function DetailsScreen({ navigation, route }: DetailsScreenProps) {
@@ -29,13 +30,25 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
     }
   }, []);
 
-  const onConfirmButtonClicked = () => {
+  useOverrideBackPress(() => {
+    const confirmedSecretItem = validateSecret();
+    if(!confirmedSecretItem) {
+      return false;
+    }
+
+    onConfirm?.(confirmedSecretItem);
+
+    return false;
+  });
+
+  const validateSecret = (): SecretItem | false => {
+    // TODO: Notify user if invalid
     if(!secret) {
-      return;
+      return false;
     }
 
     if(name === "" || username === "" || password === "") {
-      return;
+      return false;
     }
 
     const confirmedSecretItem: SecretItem = {
@@ -44,6 +57,15 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
       username: username,
       password: password,
       notes: notes,
+    }
+
+    return confirmedSecretItem;
+  }
+
+  const onConfirmButtonClicked = () => {
+    const confirmedSecretItem = validateSecret();
+    if(!confirmedSecretItem) {
+      return;
     }
 
     onConfirm?.(confirmedSecretItem);
