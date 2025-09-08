@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import BasicCircleButton from '../components/buttons/BasicCircleButton';
 import { decrypt, encrypt } from '../utils/crypto_utils';
@@ -20,6 +20,8 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
   const [ secretList, setSecretList ] = useState<SecretItem[]>([]);
   const [ loading, setLoading ] = useState<boolean>(false);
   const [ syncing, setSyncing ] = useState<boolean>(false);
+
+  const insets = useSafeAreaInsets();
 
 
   useEffect(() => {
@@ -122,7 +124,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
       </View>
 
       <BasicCircleButton
-        style={styles.plusButton}
+        style={[styles.plusButton, { bottom: insets.bottom + 10, right: insets.right + 10 }]}
         onPress={onAddButtonClicked}
         iconName={'add'}
         iconSize={34}
@@ -149,8 +151,6 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     position: 'absolute',
-    bottom: 10,
-    right: 10,
     backgroundColor: Colors.buttonPrimary,
   }
 });

@@ -15,7 +15,7 @@ export default function HomeSecretList({ secretList, onSecretItemClicked }: Home
         return (
           <View style={styles.listItemContainer}>
 
-            <TouchableOpacity style={styles.listItemButton} onPress={() => onSecretItemClicked(item)}>
+            <TouchableOpacity style={styles.listItemButton} onPress={() => onSecretItemClicked(item)} activeOpacity={0.7}>
               <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center'}}>
                 <View style={{flex: 1, justifyContent: 'center'}}>
                   <Text style={{color: Colors.textPrimary, fontWeight:"bold", fontSize: 18}}>{item.name}</Text>

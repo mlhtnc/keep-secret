@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import uuid from 'react-native-uuid';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import BasicButton from '../components/buttons/BasicButton';
 import { Colors } from '../constants';
@@ -9,7 +10,6 @@ import { DetailsScreenProps, SecretItem } from '../types';
 import ScreenHeader from '../components/ScreenHeader';
 import BasicCircleButton from '../components/buttons/BasicCircleButton';
 import useOverrideBackPress from '../hooks/useOverrideBackPress';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export default function DetailsScreen({ navigation, route }: DetailsScreenProps) {
