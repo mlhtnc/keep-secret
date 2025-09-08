@@ -20,6 +20,7 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
   const [ username, setUsername ] = useState<string>('');
   const [ password, setPassword ] = useState<string>('');
   const [ notes, setNotes ] = useState<string>('');
+  const [ secureTextOn, setSecureTextOn ] = useState<boolean>(true);
 
 
   useEffect(() => {
@@ -32,12 +33,9 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
   }, []);
 
   useOverrideBackPress(() => {
-    const confirmedSecretItem = validateSecret();
-    if(!confirmedSecretItem) {
-      return false;
+    if(secret) {
+      onConfirm?.(secret);
     }
-
-    onConfirm?.(confirmedSecretItem);
 
     return false;
   });
@@ -91,6 +89,8 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
   }
 
 
+  const eyeIconName = secureTextOn ? "eye-outline" : "eye-off-outline";
+
   return (
     <SafeAreaView style={styles.container}>
 
@@ -116,8 +116,9 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
             style={ styles.passwordInput }
             value={password}
             onChangeText={setPassword}
-            secureTextEntry={true}
+            secureTextEntry={secureTextOn}
           />
+          <BasicCircleButton iconColor={"#fff"} iconName={eyeIconName} iconSize={24} onPress={() => setSecureTextOn(p => !p)} />
           <BasicCircleButton iconColor={"#fff"} iconName={'copy-outline'} iconSize={24} onPress={() => copyToClipboard(password)} />
         </View>
 
