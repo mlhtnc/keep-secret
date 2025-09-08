@@ -9,6 +9,7 @@ import { DetailsScreenProps, SecretItem } from '../types';
 import ScreenHeader from '../components/ScreenHeader';
 import BasicCircleButton from '../components/buttons/BasicCircleButton';
 import useOverrideBackPress from '../hooks/useOverrideBackPress';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export default function DetailsScreen({ navigation, route }: DetailsScreenProps) {
@@ -91,7 +92,7 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
 
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
 
       <ScreenHeader title={ name } onTitleChanged={ onNameChanged } />
 
@@ -151,7 +152,7 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
 
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

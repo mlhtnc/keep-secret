@@ -6,6 +6,7 @@ import { sha512 } from '../utils/crypto_utils';
 import { loadPassHash, savePassHash } from '../utils/save_utils';
 import { Colors, HomeScreenName } from '../constants';
 import { LoginScreenProps } from '../types';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 export default function LoginScreen({ navigation }: LoginScreenProps) {
@@ -18,6 +19,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
   const [ passwordInputBorderWidth, setPasswordInputBorderWidth ] = useState<number>(0);
   const [ confirmPasswordInputBorderWidth, setConfirmPasswordInputBorderWidth ] = useState<number>(0);
 
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     initPassHash();
@@ -95,10 +97,11 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
     }
   }
 
+  const kavBehaviour = Platform.OS === "ios" ? "padding" : "height";
+
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={ -100 }>
-      <View style={styles.container}>
+    <KeyboardAvoidingView style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]} behavior={kavBehaviour} keyboardVerticalOffset={ -150 }>
 
         <Text style={styles.titleText}>keep secret</Text>
 
@@ -142,7 +145,6 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
 
         }
 
-      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -151,14 +153,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    padding: 10,
+    paddingHorizontal: 10,
     justifyContent: 'center'
   },
   passInput: {
     height: 40,
     alignSelf: 'stretch',
     backgroundColor: '#aaa2',
-    borderRadius: 20,
+    borderRadius: 15,
     marginHorizontal: 30,
     paddingHorizontal: 10,
     color: '#fffa',

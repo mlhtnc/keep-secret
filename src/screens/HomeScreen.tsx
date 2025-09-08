@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import BasicCircleButton from '../components/buttons/BasicCircleButton';
 import { decrypt, encrypt } from '../utils/crypto_utils';
@@ -107,7 +108,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
   
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ScreenHeader title={"Keep Secret"} hideEditButton={true} />
       
       <View style={styles.listContainer}>
@@ -129,7 +130,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
 
       <SyncActivitiyIndicator show={syncing} />
 
-    </View>
+    </SafeAreaView>
   );
 }
 
