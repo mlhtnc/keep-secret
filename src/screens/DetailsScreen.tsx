@@ -33,9 +33,11 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
   }, []);
 
   useOverrideBackPress(() => {
-    if(secret) {
-      onConfirm?.(secret);
+    if(!secret || secret.id === "") {
+      return false;
     }
+
+    onConfirm?.(secret);
 
     return false;
   });
