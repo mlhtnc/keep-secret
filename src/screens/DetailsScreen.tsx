@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import uuid from 'react-native-uuid';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -16,38 +16,21 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
 
   const { secret, onConfirm, onDelete } = route.params;
 
-  const [ name, setName ] = useState<string>('');
-  const [ username, setUsername ] = useState<string>('');
-  const [ password, setPassword ] = useState<string>('');
-  const [ notes, setNotes ] = useState<string>('');
+  const [ name, setName ] = useState<string>(secret.name);
+  const [ username, setUsername ] = useState<string>(secret.username);
+  const [ password, setPassword ] = useState<string>(secret.password);
+  const [ notes, setNotes ] = useState<string>(secret.notes);
   const [ secureTextOn, setSecureTextOn ] = useState<boolean>(true);
 
 
-  useEffect(() => {
-    if (secret) {
-      setName(secret.name);
-      setUsername(secret.username);
-      setPassword(secret.password);
-      setNotes(secret.notes || '');
-    }
-  }, []);
-
   useOverrideBackPress(() => {
-    if(!secret || secret.id === "") {
-      return false;
+    if(secret.id !== "") {
+      onConfirm?.(secret);
     }
-
-    onConfirm?.(secret);
-
     return false;
   });
 
   const validateSecret = (): SecretItem | false => {
-    // TODO: Notify user if invalid
-    if(!secret) {
-      return false;
-    }
-
     if(name === "" || username === "" || password === "") {
       return false;
     }
@@ -75,15 +58,8 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
   }
 
   const onDeleteButtonClicked = () => {
-    if(secret) {
-      onDelete?.(secret.id);
-    }
-    
+    onDelete?.(secret.id);
     navigation.goBack();
-  }
-
-  const onNameChanged = (name: string) => {
-    setName(name);
   }
 
   const copyToClipboard = (text: string) => {
@@ -96,7 +72,7 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
   return (
     <SafeAreaView style={styles.container}>
 
-      <ScreenHeader title={ name } onTitleChanged={ onNameChanged } />
+      <ScreenHeader title={name} onTitleChanged={setName} />
 
       <View style={styles.content}>
 
