@@ -1,7 +1,9 @@
 import Aes from 'react-native-aes-crypto';
+import base64 from 'react-native-base64';
+import 'react-native-get-random-values';
 
 
-const encrypt = async (password: string, plainText: string) => {
+export const encrypt = async (password: string, plainText: string) => {
   return new Promise(async (resolve, reject) => {
     try {
       const iv = await Aes.randomKey(16);
@@ -21,7 +23,7 @@ const encrypt = async (password: string, plainText: string) => {
   });
 }
 
-const decrypt = async (password: string, cipherText: string, iv: string, salt: string) => {
+export const decrypt = async (password: string, cipherText: string, iv: string, salt: string): Promise<string> => {
   return new Promise(async (resolve, reject) => {
     try {
       const key = await Aes.pbkdf2(password, salt, 200000, 256, 'sha256');
@@ -34,13 +36,16 @@ const decrypt = async (password: string, cipherText: string, iv: string, salt: s
   });
 }
 
-const sha512 = async (text: string) => {
+export const sha512 = async (text: string) => {
   return await Aes.sha512(text);
 }
 
-
-export {
-  encrypt,
-  decrypt,
-  sha512
+export const generateDEK = () => {
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return base64Encode(array);
 }
+
+const base64Encode = (buffer: Uint8Array): string => {
+  return base64.encode(String.fromCharCode.apply(null, buffer as any));
+};

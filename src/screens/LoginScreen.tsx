@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { ColorValue, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import BasicButton from '../components/buttons/BasicButton';
-import { sha512 } from '../utils/crypto_utils';
-import { loadPassHash, savePassHash } from '../utils/save_utils';
+import { decrypt, encrypt, generateDEK } from '../utils/crypto_utils';
+import { loadDEK, saveDEK } from '../utils/save_utils';
 import { Colors, HomeScreenName } from '../constants';
 import { LoginScreenProps } from '../types';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { authenticateKeychain, hasKeychain, setupKeychain } from '../utils/biometric_utils';
 
 
 export default function LoginScreen({ navigation }: LoginScreenProps) {
@@ -14,7 +15,6 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
   const [ password, setPassword ] = useState<string>('');
   const [ confirmPassword, setConfirmPassword ] = useState<string>('');
   const [ passwordExist, setPasswordExist ] = useState<boolean>(true);
-  const [ passHash, setPassHash ] = useState<string>('');
   const [ confirmPasswordInputColor, setConfirmPasswordInputColor ] = useState<ColorValue>(Colors.success);
   const [ passwordInputBorderWidth, setPasswordInputBorderWidth ] = useState<number>(0);
   const [ confirmPasswordInputBorderWidth, setConfirmPasswordInputBorderWidth ] = useState<number>(0);
@@ -22,16 +22,18 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    initPassHash();
+    init();
   }, []);
 
+  const init = async () => {
+    const dekCipherData = await loadDEK();
+    setPasswordExist(dekCipherData ? true : false);
 
-  const initPassHash = async () => {
-    const storedPassHash = await loadPassHash();
-    if(storedPassHash) {
-      setPassHash(await loadPassHash());
-    } else {
-      setPasswordExist(false);
+    if(await hasKeychain()) {
+      const dek = await authenticateKeychain();
+      if(dek) {
+        navigateToHome(dek);
+      }
     }
   }
 
@@ -80,9 +82,13 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
     }
 
     if(password === confirmPassword) {
-      savePassHash(await sha512(password));
+      const dek = generateDEK();
+      const cipherData = await encrypt(password, dek);
 
-      navigation.reset({ index: 0, routes: [{ name: HomeScreenName, params: { masterPassword: password } }] });
+      await saveDEK(cipherData);
+      await setupKeychain(dek);
+
+      navigateToHome(dek);
     }
   }
 
@@ -91,14 +97,20 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
       return;
     }
 
-    const textHash = await sha512(password);
-    if(passHash && textHash === passHash) {
-      navigation.reset({ index: 0, routes: [{ name: HomeScreenName, params: { masterPassword: password } }] });
-    }
+    try {
+      const dekCipherData = await loadDEK();
+      const dek = await decrypt(password, dekCipherData.cipherText, dekCipherData.iv, dekCipherData.salt);
+
+      navigateToHome(dek);
+    } catch(err) {}
   }
 
-  const kavBehaviour = Platform.OS === "ios" ? "padding" : "height";
+  const navigateToHome = (dek: string) => {
+    navigation.reset({ index: 0, routes: [{ name: HomeScreenName, params: { dek: dek } }] });
+  }
 
+
+  const kavBehaviour = Platform.OS === "ios" ? "padding" : "height";
 
   return (
     <KeyboardAvoidingView style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]} behavior={kavBehaviour} keyboardVerticalOffset={ -150 }>
