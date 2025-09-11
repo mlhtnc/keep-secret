@@ -38,6 +38,7 @@ export interface ScreenHeaderProps {
   navigation?: NativeStackNavigationProp<RootStackParamList>
   title: string;
   onTitleChanged?: (title: string) => void;
+  onBackPress?: () => void;
   showBackButton?: boolean;
   editTitle?: boolean;
   titleTextStyle?: TextStyle;

@@ -6,7 +6,7 @@ import { Colors } from '../constants';
 import BasicCircleButton from './buttons/BasicCircleButton';
 
 
-export default function ScreenHeader({ navigation, title, onTitleChanged, showBackButton=false, hideEditButton=false }: ScreenHeaderProps) {
+export default function ScreenHeader({ navigation, title, onTitleChanged, onBackPress, showBackButton=false, hideEditButton=false }: ScreenHeaderProps) {
 
   const titleRef = useRef<TextInput>(null);
 
@@ -29,6 +29,7 @@ export default function ScreenHeader({ navigation, title, onTitleChanged, showBa
   }
 
   const handleBackPress = () => {
+    onBackPress?.();
     navigation?.goBack();
   }
 

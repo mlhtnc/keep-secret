@@ -23,12 +23,15 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
   const [ secureTextOn, setSecureTextOn ] = useState<boolean>(true);
 
 
-  useOverrideBackPress(() => {
+  const onBackPress = () => {
     if(secret.id !== "") {
       onConfirm?.(secret);
     }
     return false;
-  });
+  }
+
+  useOverrideBackPress(onBackPress);
+
 
   const validateSecret = (): SecretItem | false => {
     if(name === "" || username === "" || password === "") {
@@ -62,6 +65,8 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
     navigation.goBack();
   }
 
+  
+
   const copyToClipboard = (text: string) => {
     Clipboard.setString(text);
   }
@@ -72,7 +77,7 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
   return (
     <SafeAreaView style={styles.container}>
 
-      <ScreenHeader navigation={navigation} title={name} onTitleChanged={setName} showBackButton={true} />
+      <ScreenHeader navigation={navigation} title={name} onTitleChanged={setName} onBackPress={onBackPress} showBackButton={true} />
 
       <View style={styles.content}>
 
