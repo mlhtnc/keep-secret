@@ -72,7 +72,7 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
   return (
     <SafeAreaView style={styles.container}>
 
-      <ScreenHeader title={name} onTitleChanged={setName} />
+      <ScreenHeader navigation={navigation} title={name} onTitleChanged={setName} showBackButton={true} />
 
       <View style={styles.content}>
 

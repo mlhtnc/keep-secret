@@ -6,7 +6,7 @@ import { Colors } from '../constants';
 import BasicCircleButton from './buttons/BasicCircleButton';
 
 
-export default function ScreenHeader({ title, onTitleChanged, hideEditButton=false }: ScreenHeaderProps) {
+export default function ScreenHeader({ navigation, title, onTitleChanged, showBackButton=false, hideEditButton=false }: ScreenHeaderProps) {
 
   const titleRef = useRef<TextInput>(null);
 
@@ -28,10 +28,20 @@ export default function ScreenHeader({ title, onTitleChanged, hideEditButton=fal
     setIsEditing((prev) => !prev);
   }
 
+  const handleBackPress = () => {
+    navigation?.goBack();
+  }
+
 
   return (
     <View style={styles.header}>
-      <View style={styles.titleContainer}>
+      <View style={[styles.titleContainer, !showBackButton ? { marginLeft: 20 } : undefined]}>
+        { showBackButton ?
+          <BasicCircleButton style={{width: 40, height: 40}} iconColor={"#fff"} iconName='arrow-back-outline' iconSize={24} onPress={ handleBackPress } />
+          :
+          null
+        }
+
         <TextInput
           ref={titleRef}
           editable={isEditing}
@@ -61,7 +71,8 @@ const styles = StyleSheet.create({
     height: 58,
     backgroundColor: Colors.background,
     flexDirection: 'row',
-    marginHorizontal: 20,
+    marginLeft: 5,
+    marginRight: 20,
     justifyContent: 'space-between',
     alignItems: 'center',
   },

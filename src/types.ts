@@ -1,4 +1,4 @@
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import type { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DetailsScreenName, HomeScreenName, LoginScreenName } from "./constants";
 import { GestureResponderEvent, TextStyle } from "react-native";
 
@@ -35,8 +35,10 @@ export type LoginScreenProps = NativeStackScreenProps<
 >;
 
 export interface ScreenHeaderProps {
+  navigation?: NativeStackNavigationProp<RootStackParamList>
   title: string;
   onTitleChanged?: (title: string) => void;
+  showBackButton?: boolean;
   editTitle?: boolean;
   titleTextStyle?: TextStyle;
   hideEditButton?: boolean;
