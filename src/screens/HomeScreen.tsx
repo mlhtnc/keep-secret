@@ -15,7 +15,7 @@ import HomeSecretList from '../components/HomeSecretList';
 
 export default function HomeScreen({ navigation, route }: HomeScreenProps) {
 
-  const { masterPassword } = route.params || {};
+  const { dek } = route.params || {};
   
   const [ secretList, setSecretList ] = useState<SecretItem[]>([]);
   const [ loading, setLoading ] = useState<boolean>(false);
@@ -38,7 +38,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
     setLoading(true);
 
     setSyncing(true);
-    decrypt(masterPassword, secretCipherData.cipherText, secretCipherData.iv, secretCipherData.salt)
+    decrypt(dek, secretCipherData.cipherText, secretCipherData.iv, secretCipherData.salt)
     .then((unencryptedText) => {
       const unencryptedSecretList: SecretItem[] = JSON.parse(unencryptedText as string);
       setSecretList(unencryptedSecretList);
@@ -98,7 +98,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
 
   const encryptAndSave = async (list: SecretItem[]) => {
     setSyncing(true);
-    encrypt(masterPassword, JSON.stringify(list))
+    encrypt(dek, JSON.stringify(list))
     .then(cipherData => {
       saveSecret(cipherData);
     }).catch((err) => {

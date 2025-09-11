@@ -15,7 +15,7 @@ export interface ColorsType {
 
 export type RootStackParamList = {
   [LoginScreenName]: undefined;
-  [HomeScreenName]: { masterPassword: string };
+  [HomeScreenName]: { dek: string };
   [DetailsScreenName]: { secret: SecretItem, onConfirm: (confirmedSecretItem: SecretItem) => void, onDelete: (id: string) => void };
 };
 

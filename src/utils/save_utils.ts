@@ -1,23 +1,23 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 const SecretKey = "secret";
-const PassHash = "passHash";
+const DEKKey = "dekKey";
 
-
-const loadSecret = async (): Promise<any> => {
+export const loadSecret = async (): Promise<any> => {
   return await load(SecretKey);
 }
 
-const saveSecret = async (secret: any): Promise<void> => {
+export const saveSecret = async (secret: any): Promise<void> => {
   save(SecretKey, secret);
 }
 
-const loadPassHash = async (): Promise<any> => {
-  return await load(PassHash);
+export const loadDEK = async (): Promise<any> => {
+  return await load(DEKKey);
 }
 
-const savePassHash = async (secret: any): Promise<void> => {
-  save(PassHash, secret);
+export const saveDEK = async (dek: any): Promise<void> => {
+  save(DEKKey, dek);
 }
 
 
@@ -45,14 +45,4 @@ const clear = async (key: string): Promise<void> => {
   } catch(err) {
     console.log('Error while clearing', key);
   }
-}
-
-
-
-
-export {
-  loadSecret,
-  saveSecret,
-  loadPassHash,
-  savePassHash
 }
