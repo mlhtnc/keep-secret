@@ -40,7 +40,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
     setSyncing(true);
     decrypt(dek, secretCipherData.cipherText, secretCipherData.iv, secretCipherData.salt)
     .then((unencryptedText) => {
-      const unencryptedSecretList: SecretItem[] = JSON.parse(unencryptedText as string);
+      const unencryptedSecretList: Item[] = JSON.parse(unencryptedText as string);
       setSecretList(unencryptedSecretList);
     }).catch((err) => {
       console.log(err);

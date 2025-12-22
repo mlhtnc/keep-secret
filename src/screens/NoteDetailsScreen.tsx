@@ -63,12 +63,6 @@ export default function NoteDetailsScreen({ navigation, route }: NoteDetailsScre
     navigation.goBack();
   }
 
-  const copyToClipboard = (text: string) => {
-    Clipboard.setString(text);
-  }
-
-
-  const eyeIconName = secureTextOn ? "eye-outline" : "eye-off-outline";
 
   return (
     <SafeAreaView style={styles.container}>
@@ -119,7 +113,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingTop: 20
+    paddingTop: 10,
   },
   notesInput: {
     flex: 1,
@@ -127,22 +121,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     paddingHorizontal: 10,
     color: '#fffa',
-    marginBottom: 10,
     borderRadius: 5,
     textAlignVertical: 'top',
     fontSize: 16,
   },
-  inputTitle: {
-    marginHorizontal: 20,
-    marginBottom: 4,
-    color: "#586572ff",
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
   buttonGroup: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 10
+    marginVertical: 10
   },
   button: {
     width: 150,
