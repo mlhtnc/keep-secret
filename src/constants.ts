@@ -1,8 +1,9 @@
-import { ErrorMessage, ColorsType, SecretItem } from "./types";
+import { ErrorMessage, ColorsType, SecretItem, NoteSecretItem } from "./types";
 
 export const LoginScreenName = "LoginScreen";
 export const HomeScreenName = "HomeScreen";
 export const DetailsScreenName = "DetailsScreen";
+export const NoteDetailsScreenName = "NoteDetailsScreen";
 
 
 export const Colors: ColorsType = {
@@ -41,9 +42,17 @@ export const CannotExportSecretFileAlreadyExistAlertMessage: ErrorMessage = {
 }
 
 export const EmpytSecretItem: SecretItem = {
+  type: "secret",
   id: "",
   name: '',
   username: '',
   password: '',
+  notes: ''
+}
+
+export const EmpytNoteSecretItem: NoteSecretItem = {
+  type: "note",
+  id: "",
+  name: '',
   notes: ''
 }

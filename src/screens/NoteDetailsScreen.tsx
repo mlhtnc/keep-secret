@@ -6,20 +6,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import BasicButton from '../components/buttons/BasicButton';
 import { Colors } from '../constants';
-import { DetailsScreenProps, SecretItem } from '../types';
+import { NoteDetailsScreenProps, NoteSecretItem, SecretItem } from '../types';
 import ScreenHeader from '../components/ScreenHeader';
 import BasicCircleButton from '../components/buttons/BasicCircleButton';
 import useOverrideBackPress from '../hooks/useOverrideBackPress';
 
 
-export default function DetailsScreen({ navigation, route }: DetailsScreenProps) {
+export default function NoteDetailsScreen({ navigation, route }: NoteDetailsScreenProps) {
 
   const { onConfirm, onDelete } = route.params;
-  const secret = route.params.secret as SecretItem;
+  const secret = route.params.secret as NoteSecretItem;
 
   const [ name, setName ] = useState<string>(secret.name);
-  const [ username, setUsername ] = useState<string>(secret.username);
-  const [ password, setPassword ] = useState<string>(secret.password);
   const [ notes, setNotes ] = useState<string>(secret.notes);
   const [ secureTextOn, setSecureTextOn ] = useState<boolean>(true);
 
@@ -34,17 +32,15 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
   useOverrideBackPress(onBackPress);
 
 
-  const validateSecret = (): SecretItem | false => {
-    if(name === "" || username === "" || password === "") {
+  const validateSecret = (): NoteSecretItem | false => {
+    if(name === "") {
       return false;
     }
 
-    const confirmedSecretItem: SecretItem = {
-      type: "secret",
+    const confirmedSecretItem: NoteSecretItem = {
+      type: "note",
       id: secret.id !== "" ? secret.id : uuid.v4(),
       name: name,
-      username: username,
-      password: password,
       notes: notes,
     }
 
@@ -67,8 +63,6 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
     navigation.goBack();
   }
 
-  
-
   const copyToClipboard = (text: string) => {
     Clipboard.setString(text);
   }
@@ -83,37 +77,13 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
 
       <View style={styles.content}>
 
-        <Text style={styles.inputTitle}>Username</Text>
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={ styles.usernameInput }
-            value={username}
-            onChangeText={setUsername}
-          />
-          <BasicCircleButton iconColor={"#fff"} iconName={'copy-outline'} iconSize={24} onPress={() => copyToClipboard(username)} />
-        </View>
-
-        <Text style={styles.inputTitle}>Password</Text>
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={ styles.passwordInput }
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={secureTextOn}
-          />
-          <BasicCircleButton iconColor={"#fff"} iconName={eyeIconName} iconSize={24} onPress={() => setSecureTextOn(p => !p)} />
-          <BasicCircleButton iconColor={"#fff"} iconName={'copy-outline'} iconSize={24} onPress={() => copyToClipboard(password)} />
-        </View>
-
-        <Text style={styles.inputTitle}>Notes</Text>
         <TextInput
           style={styles.notesInput}
           value={notes}
           onChangeText={setNotes}
           multiline={true}
-          numberOfLines={4}
+          scrollEnabled={true}
+          placeholder="Enter your notes here..."
         />
 
         <View style={styles.buttonGroup}>
@@ -151,45 +121,16 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 20
   },
-  inputContainer: {
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: Colors.background,
-    flexDirection: 'row',
-    marginHorizontal: 20,
-    marginBottom: 20,
-  },
-  usernameInput: {
-    flex: 1,
-    height: 40,
-    alignSelf: 'stretch',
-    paddingHorizontal: 10,
-    color: '#fffa',
-    borderColor: Colors.border,
-    borderBottomWidth: 1,
-    textAlignVertical: 'top',
-    fontSize: 16,
-  },
-  passwordInput: {
-    flex: 1,
-    height: 40,
-    alignSelf: 'stretch',
-    paddingHorizontal: 10,
-    color: '#fffa',
-    borderColor: Colors.border,
-    borderBottomWidth: 1,
-    textAlignVertical: 'top',
-    fontSize: 16,
-  },
   notesInput: {
-    height: 100,
+    flex: 1,
     alignSelf: 'stretch',
-    marginHorizontal: 20,
+    marginHorizontal: 10,
     paddingHorizontal: 10,
     color: '#fffa',
-    marginBottom: 20,
-    borderColor: Colors.border,
-    borderBottomWidth: 1,
+    marginBottom: 10,
+    borderColor: Colors.buttonPrimary,
+    borderWidth: 0.8,
+    borderRadius: 5,
     textAlignVertical: 'top',
     fontSize: 16,
   },
@@ -203,7 +144,7 @@ const styles = StyleSheet.create({
   buttonGroup: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 40
+    marginTop: 10
   },
   button: {
     width: 150,

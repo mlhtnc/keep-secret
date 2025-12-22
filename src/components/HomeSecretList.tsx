@@ -7,10 +7,15 @@ import { HomeSecretListProps } from '../types';
 
 export default function HomeSecretList({ secretList, onSecretItemClicked }: HomeSecretListProps) {
 
+
   return (
     <FlatList
       data={secretList}
       renderItem={({item}) => {
+        let username = '';
+        if(item.type === 'secret') {
+          username = item.username;
+        }
       
         return (
           <View style={styles.listItemContainer}>
@@ -19,7 +24,7 @@ export default function HomeSecretList({ secretList, onSecretItemClicked }: Home
               <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center'}}>
                 <View style={{flex: 1, justifyContent: 'center'}}>
                   <Text style={{color: Colors.textPrimary, fontWeight:"bold", fontSize: 18}}>{item.name}</Text>
-                  <Text style={{color: Colors.textSecondary, fontSize: 16}}>{item.username}</Text>
+                  <Text style={{color: Colors.textSecondary, fontSize: 16}}>{username}</Text>
                 </View>
 
                 <Icon name='chevron-forward-outline' size={24} color={Colors.textSecondary} style={{flex: 0.05}} />

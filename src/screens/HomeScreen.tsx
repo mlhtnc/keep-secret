@@ -5,9 +5,9 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import BasicCircleButton from '../components/buttons/BasicCircleButton';
 import { decrypt, encrypt } from '../utils/crypto_utils';
 import { loadSecret, saveSecret } from '../utils/save_utils';
-import { Colors, DetailsScreenName, EmpytSecretItem } from '../constants';
+import { Colors, DetailsScreenName, EmpytNoteSecretItem, EmpytSecretItem, NoteDetailsScreenName } from '../constants';
 import SyncActivitiyIndicator from '../components/SyncActivitiyIndicator';
-import { HomeScreenProps, SecretItem } from '../types';
+import { HomeScreenProps, Item, NoteSecretItem, SecretItem } from '../types';
 import ScreenHeader from '../components/ScreenHeader';
 import HomeNoSecret from '../components/HomeNoSecret';
 import HomeSecretList from '../components/HomeSecretList';
@@ -17,7 +17,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
 
   const { dek } = route.params || {};
   
-  const [ secretList, setSecretList ] = useState<SecretItem[]>([]);
+  const [ secretList, setSecretList ] = useState<Item[]>([]);
   const [ loading, setLoading ] = useState<boolean>(false);
   const [ syncing, setSyncing ] = useState<boolean>(false);
 
@@ -65,7 +65,22 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
     );
   }
 
-  const onConfirm = (confirmedSecretItem: SecretItem) => {
+  const onAddNoteButtonClicked = () => {
+    if(syncing) {
+      return;
+    }
+
+    navigation.navigate(
+      NoteDetailsScreenName,
+      {
+        secret: EmpytNoteSecretItem,
+        onConfirm,
+        onDelete
+      }
+    );
+  }
+
+  const onConfirm = (confirmedSecretItem: Item) => {
     const reducedSecretList = secretList.filter(i => i.id !== confirmedSecretItem.id);
     const newSecretList = [ confirmedSecretItem, ...reducedSecretList ];
   
@@ -81,13 +96,13 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
     encryptAndSave(reducedSecretList);
   }
 
-  const onSecretItemClicked = (item: SecretItem) => {
+  const onSecretItemClicked = (item: Item) => {
     if(syncing) {
       return;
     }
 
     navigation.navigate(
-      DetailsScreenName,
+      item.type === "secret" ? DetailsScreenName : NoteDetailsScreenName,
       {
         secret: item,
         onConfirm,
@@ -96,7 +111,7 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
     );
   }
 
-  const encryptAndSave = async (list: SecretItem[]) => {
+  const encryptAndSave = async (list: Item[]) => {
     setSyncing(true);
     encrypt(dek, JSON.stringify(list))
     .then(cipherData => {
@@ -123,12 +138,21 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
       
       </View>
 
-      <BasicCircleButton
-        style={[styles.plusButton, { bottom: insets.bottom + 10, right: insets.right + 10 }]}
-        onPress={onAddButtonClicked}
-        iconName={'add'}
-        iconSize={34}
-      /> 
+      <View style={[styles.buttonGroup, { bottom: insets.bottom + 10, right: insets.right + 10 }]}>
+        <BasicCircleButton
+          style={[styles.button, { marginRight: 10 }]}
+          onPress={onAddNoteButtonClicked}
+          iconName={'create-outline'}
+          iconSize={34}
+        />
+
+        <BasicCircleButton
+          style={styles.button}
+          onPress={onAddButtonClicked}
+          iconName={'add'}
+          iconSize={34}
+        /> 
+      </View>
 
       <SyncActivitiyIndicator show={syncing} />
 
@@ -147,10 +171,17 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     justifyContent: 'center',
   },
-  plusButton: {
+  buttonGroup: {
+    flexDirection: "row",
+    width: 200,
+    height: 50,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    position: 'absolute',
+  },
+  button: {
     width: 50,
     height: 50,
-    position: 'absolute',
     backgroundColor: Colors.buttonPrimary,
   }
 });
