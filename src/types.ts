@@ -1,5 +1,5 @@
 import type { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DetailsScreenName, HomeScreenName, LoginScreenName } from "./constants";
+import { DetailsScreenName, HomeScreenName, LoginScreenName, NoteDetailsScreenName } from "./constants";
 import { GestureResponderEvent, TextStyle } from "react-native";
 
 
@@ -16,7 +16,8 @@ export interface ColorsType {
 export type RootStackParamList = {
   [LoginScreenName]: undefined;
   [HomeScreenName]: { dek: string };
-  [DetailsScreenName]: { secret: SecretItem, onConfirm: (confirmedSecretItem: SecretItem) => void, onDelete: (id: string) => void };
+  [DetailsScreenName]: { secret: Item, onConfirm: (confirmedSecretItem: Item) => void, onDelete: (id: string) => void };
+  [NoteDetailsScreenName]: { secret: Item, onConfirm: (confirmedSecretItem: Item) => void, onDelete: (id: string) => void };
 };
 
 export type HomeScreenProps = NativeStackScreenProps<
@@ -27,6 +28,11 @@ export type HomeScreenProps = NativeStackScreenProps<
 export type DetailsScreenProps = NativeStackScreenProps<
   RootStackParamList,
   typeof DetailsScreenName
+>;
+
+export type NoteDetailsScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  typeof NoteDetailsScreenName
 >;
 
 export type LoginScreenProps = NativeStackScreenProps<
@@ -46,8 +52,8 @@ export interface ScreenHeaderProps {
 }
 
 export interface HomeSecretListProps {
-  secretList: SecretItem[];
-  onSecretItemClicked: (item: SecretItem) => void;
+  secretList: Item[];
+  onSecretItemClicked: (item: Item) => void;
 }
 
 export interface SyncActivitiyIndicatorParams {
@@ -65,13 +71,23 @@ export interface SecretModalInfoOnAdd {
   password: string;
 } 
 
+export interface NoteSecretItem {
+  type: "note";
+  id: string;
+  name: string;
+  notes: string;
+}
+
 export interface SecretItem {
-	id: string;
+  type: "secret";
+  id: string;
   name: string;
   username: string;
 	password: string;
   notes: string;
 }
+
+export type Item = SecretItem | NoteSecretItem;
 
 export interface ErrorMessage {
   title: string;
