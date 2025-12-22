@@ -128,8 +128,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     color: '#fffa',
     marginBottom: 10,
-    borderColor: Colors.buttonPrimary,
-    borderWidth: 0.8,
     borderRadius: 5,
     textAlignVertical: 'top',
     fontSize: 16,

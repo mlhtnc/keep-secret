@@ -44,10 +44,8 @@ const styles = StyleSheet.create({
   listItemContainer: {
     flexDirection: 'row',
     alignSelf: 'stretch',
-    height: 80,
+    height: 70,
     backgroundColor: Colors.background,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
   },
   listItemButton: {
     flex: 1,
