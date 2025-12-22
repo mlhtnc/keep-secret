@@ -50,11 +50,6 @@ export interface HomeSecretListProps {
   onSecretItemClicked: (item: SecretItem) => void;
 }
 
-export interface AlertModalRef {
-	open: (options?: { title: string; description: string }) => void;
-	close: () => void;
-}
-
 export interface SyncActivitiyIndicatorParams {
   show: boolean;
 }
@@ -65,17 +60,10 @@ export interface SettingsListElementProps {
   onPress: (event: GestureResponderEvent) => void;
 }
 
-
 export interface SecretModalInfoOnAdd {
   info: string;
   password: string;
 } 
-
-export interface AddEditSecretModalProps {
-  visible: boolean;
-  setVisible: (visible: boolean) => void;
-  onAdded: (info: SecretModalInfoOnAdd) => void;
-}
 
 export interface SecretItem {
 	id: string;
