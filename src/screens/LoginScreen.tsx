@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ColorValue, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ColorValue, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import BasicButton from '../components/buttons/BasicButton';
@@ -94,6 +94,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
 
   const onConfirmButtonClicked = async () => {
     if(password.length === 0) {
+      ToastAndroid.show('Incorrect Password', ToastAndroid.SHORT);
       return;
     }
 
@@ -102,7 +103,10 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
       const dek = await decrypt(password, dekCipherData.cipherText, dekCipherData.iv, dekCipherData.salt);
 
       navigateToHome(dek);
-    } catch(err) {}
+    } catch(err) {
+      ToastAndroid.show('Incorrect Password', ToastAndroid.SHORT);
+      console.log(err);
+    }
   }
 
   const navigateToHome = (dek: string) => {
