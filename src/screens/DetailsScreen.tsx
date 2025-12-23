@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { Platform, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native';
 import uuid from 'react-native-uuid';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -71,6 +71,10 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
 
   const copyToClipboard = (text: string) => {
     Clipboard.setString(text);
+
+    if(Platform.OS === 'android') {
+      ToastAndroid.show('Copied', ToastAndroid.SHORT);
+    }
   }
 
 
