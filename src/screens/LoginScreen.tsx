@@ -105,7 +105,6 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
       navigateToHome(dek);
     } catch(err) {
       ToastAndroid.show('Incorrect Password', ToastAndroid.SHORT);
-      console.log(err);
     }
   }
 
