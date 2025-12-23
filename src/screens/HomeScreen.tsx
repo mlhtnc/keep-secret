@@ -2,15 +2,17 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import BasicCircleButton from '../components/buttons/BasicCircleButton';
 import { decrypt, encrypt } from '../utils/crypto_utils';
 import { loadSecret, saveSecret } from '../utils/save_utils';
 import { Colors, DetailsScreenName, EmpytNoteSecretItem, EmpytSecretItem, NoteDetailsScreenName } from '../constants';
+import { HomeScreenProps, Item } from '../types';
+import BasicCircleButton from '../components/buttons/BasicCircleButton';
 import SyncActivitiyIndicator from '../components/SyncActivitiyIndicator';
-import { HomeScreenProps, Item, NoteSecretItem, SecretItem } from '../types';
 import ScreenHeader from '../components/ScreenHeader';
 import HomeNoSecret from '../components/HomeNoSecret';
 import HomeSecretList from '../components/HomeSecretList';
+import Clipboard from '@react-native-clipboard/clipboard';
+import { showMessage } from '../utils/toast_message_utils';
 
 
 export default function HomeScreen({ navigation, route }: HomeScreenProps) {
@@ -122,6 +124,12 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
       setSyncing(false);
     });
   }
+
+  const exportSecrets = async () => {
+    const secretCipherData = await loadSecret();
+    Clipboard.setString(JSON.stringify(secretCipherData));
+    showMessage('Exported to Clipboard');
+  }
   
 
   return (
@@ -139,6 +147,13 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
       </View>
 
       <View style={[styles.buttonGroup, { bottom: insets.bottom + 10, right: insets.right + 10 }]}>
+        <BasicCircleButton
+          style={[styles.button, { marginRight: 10 }]}
+          onPress={exportSecrets}
+          iconName={'download-outline'}
+          iconSize={34}
+        />
+
         <BasicCircleButton
           style={[styles.button, { marginRight: 10 }]}
           onPress={onAddNoteButtonClicked}

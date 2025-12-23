@@ -10,6 +10,7 @@ import { DetailsScreenProps, SecretItem } from '../types';
 import ScreenHeader from '../components/ScreenHeader';
 import BasicCircleButton from '../components/buttons/BasicCircleButton';
 import useOverrideBackPress from '../hooks/useOverrideBackPress';
+import { showMessage } from '../utils/toast_message_utils';
 
 
 export default function DetailsScreen({ navigation, route }: DetailsScreenProps) {
@@ -71,10 +72,7 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
 
   const copyToClipboard = (text: string) => {
     Clipboard.setString(text);
-
-    if(Platform.OS === 'android') {
-      ToastAndroid.show('Copied', ToastAndroid.SHORT);
-    }
+    showMessage('Copied');
   }
 
 

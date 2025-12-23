@@ -8,6 +8,7 @@ import { loadDEK, saveDEK } from '../utils/save_utils';
 import { Colors, HomeScreenName } from '../constants';
 import { LoginScreenProps } from '../types';
 import { authenticateKeychain, hasKeychain, setupKeychain } from '../utils/biometric_utils';
+import { showMessage } from '../utils/toast_message_utils';
 
 
 export default function LoginScreen({ navigation }: LoginScreenProps) {
@@ -94,7 +95,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
 
   const onConfirmButtonClicked = async () => {
     if(password.length === 0) {
-      ToastAndroid.show('Incorrect Password', ToastAndroid.SHORT);
+      showMessage('Incorrect Password');
       return;
     }
 
@@ -104,7 +105,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
 
       navigateToHome(dek);
     } catch(err) {
-      ToastAndroid.show('Incorrect Password', ToastAndroid.SHORT);
+      showMessage('Incorrect Password');
     }
   }
 
