@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { decrypt, encrypt } from '../utils/crypto_utils';
-import { loadSecret, saveSecret } from '../utils/save_utils';
+import { loadDEK, loadSecret, saveSecret } from '../utils/save_utils';
 import { Colors, DetailsScreenName, EmpytNoteSecretItem, EmpytSecretItem, NoteDetailsScreenName } from '../constants';
 import { HomeScreenProps, Item } from '../types';
 import BasicCircleButton from '../components/buttons/BasicCircleButton';
@@ -24,7 +24,6 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
   const [ syncing, setSyncing ] = useState<boolean>(false);
 
   const insets = useSafeAreaInsets();
-
 
   useEffect(() => {
     initSecrets();
@@ -127,7 +126,12 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
 
   const exportSecrets = async () => {
     const secretCipherData = await loadSecret();
-    Clipboard.setString(JSON.stringify(secretCipherData));
+    const dekData = await loadDEK();
+
+    const secretText = JSON.stringify(secretCipherData);
+    const dekText = JSON.stringify(dekData);
+
+    Clipboard.setString(secretText + '\n' + dekText);
     showMessage('Exported to Clipboard');
   }
   
