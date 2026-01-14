@@ -7,9 +7,10 @@ import BootSplash from "react-native-bootsplash";
 import LoginScreen from './src/screens/LoginScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import DetailsScreen from './src/screens/DetailsScreen';
-import { DetailsScreenName, HomeScreenName, LoginScreenName, NoteDetailsScreenName } from './src/constants';
+import { DetailsScreenName, HomeScreenName, ImportSecretsScreenName, LoginScreenName, NoteDetailsScreenName } from './src/constants';
 import { RootStackParamList } from './src/types';
 import NoteDetailsScreen from './src/screens/NoteDetailsScreen';
+import ImportSecretsScreen from './src/screens/ImportSecretsScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -23,6 +24,7 @@ export default function App() {
             <Stack.Screen name={HomeScreenName} component={HomeScreen} />
             <Stack.Screen name={DetailsScreenName} component={DetailsScreen} />
             <Stack.Screen name={NoteDetailsScreenName} component={NoteDetailsScreen} />
+            <Stack.Screen name={ImportSecretsScreenName} component={ImportSecretsScreen} />
           </Stack.Navigator>
         </NavigationContainer>
     </SafeAreaProvider>

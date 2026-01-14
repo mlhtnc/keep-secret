@@ -4,6 +4,7 @@ export const LoginScreenName = "LoginScreen";
 export const HomeScreenName = "HomeScreen";
 export const DetailsScreenName = "DetailsScreen";
 export const NoteDetailsScreenName = "NoteDetailsScreen";
+export const ImportSecretsScreenName = "ImportSecretsScreen";
 
 
 export const Colors: ColorsType = {

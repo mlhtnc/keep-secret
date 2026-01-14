@@ -1,5 +1,5 @@
 import type { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
-import { DetailsScreenName, HomeScreenName, LoginScreenName, NoteDetailsScreenName } from "./constants";
+import { DetailsScreenName, HomeScreenName, ImportSecretsScreenName, LoginScreenName, NoteDetailsScreenName } from "./constants";
 import { GestureResponderEvent, TextStyle } from "react-native";
 
 
@@ -18,6 +18,7 @@ export type RootStackParamList = {
   [HomeScreenName]: { dek: string };
   [DetailsScreenName]: { secret: Item, onConfirm: (confirmedSecretItem: Item) => void, onDelete: (id: string) => void };
   [NoteDetailsScreenName]: { secret: Item, onConfirm: (confirmedSecretItem: Item) => void, onDelete: (id: string) => void };
+  [ImportSecretsScreenName]: undefined;
 };
 
 export type HomeScreenProps = NativeStackScreenProps<
@@ -41,7 +42,6 @@ export type LoginScreenProps = NativeStackScreenProps<
 >;
 
 export interface ScreenHeaderProps {
-  navigation?: NativeStackNavigationProp<RootStackParamList>
   title: string;
   onTitleChanged?: (title: string) => void;
   onBackPress?: () => void;

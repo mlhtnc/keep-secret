@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
-import { ColorValue, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native';
+import { ColorValue, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import BasicButton from '../components/buttons/BasicButton';
 import { decrypt, encrypt, generateDEK } from '../utils/crypto_utils';
 import { loadDEK, saveDEK } from '../utils/save_utils';
-import { Colors, HomeScreenName } from '../constants';
+import { Colors, HomeScreenName, ImportSecretsScreenName } from '../constants';
 import { LoginScreenProps } from '../types';
 import { authenticateKeychain, hasKeychain, setupKeychain } from '../utils/biometric_utils';
 import { showMessage } from '../utils/toast_message_utils';
-
 
 export default function LoginScreen({ navigation }: LoginScreenProps) {
 
@@ -113,54 +112,58 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
     navigation.reset({ index: 0, routes: [{ name: HomeScreenName, params: { dek: dek } }] });
   }
 
+  const handleBackupButtonClicked = () => {
+    navigation.navigate(ImportSecretsScreenName);
+  }
 
   const kavBehaviour = Platform.OS === "ios" ? "padding" : "height";
 
   return (
     <KeyboardAvoidingView style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]} behavior={kavBehaviour} keyboardVerticalOffset={ -150 }>
+      <Text style={styles.titleText}>keep secret</Text>
 
-        <Text style={styles.titleText}>keep secret</Text>
+      <Text style={styles.passwordText}>Master Password</Text>
+      <TextInput
+        style={[styles.passInput, { borderWidth: passwordInputBorderWidth }]}
+        value={password}
+        onChangeText={onPassInputChanged}
+        secureTextEntry={true}
+      />
 
-        <Text style={styles.passwordText}>Master Password</Text>
-        <TextInput
-          style={[styles.passInput, { borderWidth: passwordInputBorderWidth }]}
-          value={password}
-          onChangeText={onPassInputChanged}
-          secureTextEntry={true}
+      { !passwordExist ? null :
+        <BasicButton
+          style={styles.button}
+          text={"Confirm"}
+          textStyle={styles.buttonText}
+          onPress={onConfirmButtonClicked}
         />
+      }
 
-        { !passwordExist ? null :
-
+      { passwordExist ? null :
+        <View>
+          <Text style={styles.passwordText}>Confirm Password</Text>
+          <TextInput
+            style={[styles.passInput, { borderColor: confirmPasswordInputColor, borderWidth: confirmPasswordInputBorderWidth }]}
+            value={confirmPassword}
+            onChangeText={onConfirmPassInputChanged}
+            secureTextEntry={true}
+          />
+        
           <BasicButton
             style={styles.button}
-            text={"Confirm"}
+            text={"Create"}
             textStyle={styles.buttonText}
-            onPress={onConfirmButtonClicked}
+            onPress={onCreateButtonClicked}
           />
-        }
 
-        { passwordExist ? null :
-
-          <View>
-            <Text style={styles.passwordText}>Confirm Password</Text>
-            <TextInput
-              style={[styles.passInput, { borderColor: confirmPasswordInputColor, borderWidth: confirmPasswordInputBorderWidth }]}
-              value={confirmPassword}
-              onChangeText={onConfirmPassInputChanged}
-              secureTextEntry={true}
-            />
-          
-
-            <BasicButton
-              style={styles.button}
-              text={"Create"}
-              textStyle={styles.buttonText}
-              onPress={onCreateButtonClicked}
-            />
-          </View>
-
-        }
-
+          <BasicButton
+            style={styles.backupButton}
+            text={"Do you have backup?"}
+            textStyle={styles.backupButtonText}
+            onPress={handleBackupButtonClicked}
+          />
+        </View>
+      }
     </KeyboardAvoidingView>
   );
 }
@@ -200,10 +203,20 @@ const styles = StyleSheet.create({
   button: {
     width: 150,
     height: 40,
-    marginTop: 20,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    marginVertical: 20
   },
   buttonText: {
     fontSize: 16,
+  },
+  backupButton: {
+    width: 150,
+    height: 40,
+    alignSelf: "center",
+    backgroundColor: Colors.background,
+  },
+  backupButtonText: {
+    fontSize: 15,
+    color: '#555'
   }
 });

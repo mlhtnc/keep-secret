@@ -67,7 +67,7 @@ export default function NoteDetailsScreen({ navigation, route }: NoteDetailsScre
   return (
     <SafeAreaView style={styles.container}>
 
-      <ScreenHeader navigation={navigation} title={name} onTitleChanged={setName} onBackPress={onBackPress} showBackButton={true} />
+      <ScreenHeader title={name} onTitleChanged={setName} onBackPress={onBackPress} showBackButton={true} />
 
       <View style={styles.content}>
 
@@ -78,6 +78,7 @@ export default function NoteDetailsScreen({ navigation, route }: NoteDetailsScre
           multiline={true}
           scrollEnabled={true}
           placeholder="Enter your notes here..."
+          placeholderTextColor={"#555"}
         />
 
         <View style={styles.buttonGroup}>

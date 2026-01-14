@@ -1,17 +1,17 @@
 import { useRef, useState } from 'react';
 import { View, StyleSheet, TextInput } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import { ScreenHeaderProps } from '../types';
 import { Colors } from '../constants';
 import BasicCircleButton from './buttons/BasicCircleButton';
 
-
-export default function ScreenHeader({ navigation, title, onTitleChanged, onBackPress, showBackButton=false, hideEditButton=false }: ScreenHeaderProps) {
+export default function ScreenHeader({ title, onTitleChanged, onBackPress, showBackButton=false, hideEditButton=false }: ScreenHeaderProps) {
 
   const titleRef = useRef<TextInput>(null);
 
   const [ isEditing, setIsEditing ] = useState<boolean>(false);
-
+  const navigation = useNavigation();
 
   const onTitleChange = (text: string) => {
     onTitleChanged?.(text);
@@ -32,7 +32,6 @@ export default function ScreenHeader({ navigation, title, onTitleChanged, onBack
     onBackPress?.();
     navigation?.goBack();
   }
-
 
   return (
     <View style={styles.header}>
@@ -59,14 +58,14 @@ export default function ScreenHeader({ navigation, title, onTitleChanged, onBack
   );
 }
 
-
 const styles = StyleSheet.create({
   header: {
     height: 60,
     backgroundColor: Colors.background,
     borderColor: Colors.border,
     borderBottomWidth: 1,
-    justifyContent: 'space-between',
+    justifyContent: "center",
+    alignItems: "flex-start"
   },
   titleContainer: {
     height: 58,

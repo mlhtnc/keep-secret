@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Platform, StyleSheet, Text, TextInput, ToastAndroid, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import uuid from 'react-native-uuid';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,7 +11,6 @@ import ScreenHeader from '../components/ScreenHeader';
 import BasicCircleButton from '../components/buttons/BasicCircleButton';
 import useOverrideBackPress from '../hooks/useOverrideBackPress';
 import { showMessage } from '../utils/toast_message_utils';
-
 
 export default function DetailsScreen({ navigation, route }: DetailsScreenProps) {
 
@@ -68,20 +67,17 @@ export default function DetailsScreen({ navigation, route }: DetailsScreenProps)
     navigation.goBack();
   }
 
-  
-
   const copyToClipboard = (text: string) => {
     Clipboard.setString(text);
     showMessage('Copied');
   }
-
 
   const eyeIconName = secureTextOn ? "eye-outline" : "eye-off-outline";
 
   return (
     <SafeAreaView style={styles.container}>
 
-      <ScreenHeader navigation={navigation} title={name} onTitleChanged={setName} onBackPress={onBackPress} showBackButton={true} />
+      <ScreenHeader title={name} onTitleChanged={setName} onBackPress={onBackPress} showBackButton={true} />
 
       <View style={styles.content}>
 

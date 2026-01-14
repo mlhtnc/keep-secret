@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 import { decrypt, encrypt } from '../utils/crypto_utils';
 import { loadDEK, loadSecret, saveSecret } from '../utils/save_utils';
@@ -11,9 +12,7 @@ import SyncActivitiyIndicator from '../components/SyncActivitiyIndicator';
 import ScreenHeader from '../components/ScreenHeader';
 import HomeNoSecret from '../components/HomeNoSecret';
 import HomeSecretList from '../components/HomeSecretList';
-import Clipboard from '@react-native-clipboard/clipboard';
 import { showMessage } from '../utils/toast_message_utils';
-
 
 export default function HomeScreen({ navigation, route }: HomeScreenProps) {
 
@@ -125,29 +124,24 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
   }
 
   const exportSecrets = async () => {
-    const secretCipherData = await loadSecret();
-    const dekData = await loadDEK();
+    const secretCipher = await loadSecret();
+    const dekCipher = await loadDEK();
 
-    const secretText = JSON.stringify(secretCipherData);
-    const dekText = JSON.stringify(dekData);
+    const exportedSecrets = JSON.stringify({ secretCipher, dekCipher });
 
-    Clipboard.setString(secretText + '\n' + dekText);
+    Clipboard.setString(exportedSecrets);
     showMessage('Exported to Clipboard');
   }
-  
 
   return (
     <SafeAreaView style={styles.container}>
       <ScreenHeader title={"Keep Secret"} hideEditButton={true} />
-      
       <View style={styles.listContainer}>
-
         { loading ? null : secretList.length === 0 ?
             <HomeNoSecret />
             :
             <HomeSecretList secretList={secretList} onSecretItemClicked={onSecretItemClicked} />
         }
-      
       </View>
 
       <View style={[styles.buttonGroup, { bottom: insets.bottom + 10, right: insets.right + 10 }]}>
@@ -155,26 +149,23 @@ export default function HomeScreen({ navigation, route }: HomeScreenProps) {
           style={[styles.button, { marginRight: 10 }]}
           onPress={exportSecrets}
           iconName={'download-outline'}
-          iconSize={34}
+          iconSize={32}
         />
-
         <BasicCircleButton
           style={[styles.button, { marginRight: 10 }]}
           onPress={onAddNoteButtonClicked}
           iconName={'create-outline'}
-          iconSize={34}
+          iconSize={32}
         />
-
         <BasicCircleButton
           style={styles.button}
           onPress={onAddButtonClicked}
           iconName={'add'}
-          iconSize={34}
+          iconSize={32}
         /> 
       </View>
 
       <SyncActivitiyIndicator show={syncing} />
-
     </SafeAreaView>
   );
 }
@@ -199,8 +190,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   button: {
-    width: 50,
-    height: 50,
+    width: 45,
+    height: 45,
     backgroundColor: Colors.buttonPrimary,
   }
 });
