@@ -4,6 +4,7 @@
 - Login with biometrics.
 - No cloud, offline.
 - Encrypted with AES-256.
+- Import/Export secrets.
 - Ready for Android.
 - It should be ready for iOS with few adjustments.
 
